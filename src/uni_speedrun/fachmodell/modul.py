@@ -12,6 +12,7 @@ class Modul:
         reihenfolge: int,
         status: Modulstatus = Modulstatus.GEPLANT,
         startdatum: date | None = None,
+        pruefungsdatum: date | None = None,
         abschlussdatum: date | None = None,
     ) -> None:
         self.name = name
@@ -20,11 +21,16 @@ class Modul:
         self.reihenfolge = reihenfolge
         self.status = status
         self.startdatum = startdatum
+        self.pruefungsdatum
         self.abschlussdatum = abschlussdatum
 
     def aktivieren(self, startdatum: date | None = None) -> None:
         self.status = Modulstatus.AKTIV
         self.startdatum = startdatum or date.today()
+
+    def warte_auf_ergebnis(self, pruefungsdatum: date | None = None) -> None:
+        self.status = Modulstatus.WARTE_AUF_ERGEBNIS
+        self.pruefungsdatum = pruefungsdatum or date.today()
 
     def schliesse_ab(self, abschlussdatum: date | None = None) -> None:
         self.status = Modulstatus.ABGESCHLOSSEN
