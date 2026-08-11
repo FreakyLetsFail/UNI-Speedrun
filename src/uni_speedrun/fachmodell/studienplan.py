@@ -20,3 +20,15 @@ class Studienplan:
         for modul in self.module:
             if modul.status == Modulstatus.AKTIV:
                 return modul
+        else:
+            return None
+
+    def aktiviere_modul(self, modul):
+            if self.aktives_modul() is None:
+                modul.aktivieren()
+                print(f"Modul: {modul.name} wurde aktiviert")
+            else:
+                aktives = self.aktives_modul()
+                raise ValueError(
+                    f"Aktiven nicht möglich! Das modul {aktives.name} ist bereits aktiv."
+                    )

@@ -21,7 +21,7 @@ class Modul:
         self.reihenfolge = reihenfolge
         self.status = status
         self.startdatum = startdatum
-        self.pruefungsdatum
+        self.pruefungsdatum = pruefungsdatum
         self.abschlussdatum = abschlussdatum
 
     def aktivieren(self, startdatum: date | None = None) -> None:
