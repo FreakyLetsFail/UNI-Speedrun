@@ -5,12 +5,22 @@ from dateutil.relativedelta import relativedelta
 
 class Studienplan:
     def __init__(self, module: list[Modul], studienziel_name, zielects, zieldauer):
+
+        reihenfolge = [modul.reihenfolge for modul in module]
+
+        if len(reihenfolge) != len(set(reihenfolge)):
+            raise ValueError(
+                "Jedes Modul muss eine eindeutige Reihenfolge haben."
+            )
+
         self.module = module
         self.studienziel_name = studienziel_name
         self.zielects = zielects
         self.zieldauer = zieldauer
         self.startdatum = date.today()
     
+
+
 
     def zieldatum(self):
         return self.startdatum + relativedelta(months=self.zieldauer)

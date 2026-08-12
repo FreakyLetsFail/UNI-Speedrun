@@ -15,10 +15,22 @@ class Modul:
         pruefungsdatum: date | None = None,
         abschlussdatum: date | None = None,
     ) -> None:
+        if not name:
+            raise ValueError("Der Modulname darf nicht leer sein.")
         self.name = name
+
+        if ects <= 0:
+            raise ValueError("ECTS müssen größer als 0 sein.")
         self.ects = ects
+
+        if geplante_dauer_tage <= 0:
+            raise ValueError("Die geplante Dauer muss größer als 0 sein.")
         self.geplante_dauer_tage = geplante_dauer_tage
+
+        if reihenfolge <= 0:
+            raise ValueError("Die Reihenfolge muss größer als 0 sein.")
         self.reihenfolge = reihenfolge
+        
         self.status = status
         self.startdatum = startdatum
         self.pruefungsdatum = pruefungsdatum
