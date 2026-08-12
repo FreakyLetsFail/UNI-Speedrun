@@ -43,6 +43,20 @@ def test_studienziele():
     assert test4.zielects == 180
     assert test4.zieldauer == 15
 
+#Überprüfung ob ECTS richtig ausgegeben werden
+def test_ects_points(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test5 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+    info._schliesse_ab()
+    assert test5.erreichte_ects() == 5
+
+
+#Überprüfung ob Prozentfortschritt richtig ausgegeben wird
+def test_fortschritt_prozent(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test6 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+    info._schliesse_ab()
+    assert test6.fortschritt_prozent() == 2.78
 
 
 """

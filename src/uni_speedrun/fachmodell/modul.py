@@ -24,15 +24,15 @@ class Modul:
         self.pruefungsdatum = pruefungsdatum
         self.abschlussdatum = abschlussdatum
 
-    def aktivieren(self, startdatum: date | None = None) -> None:
+    def _aktivieren(self, startdatum: date | None = None) -> None:
         self.status = Modulstatus.AKTIV
         self.startdatum = startdatum or date.today()
 
-    def warte_auf_ergebnis(self, pruefungsdatum: date | None = None) -> None:
+    def _warte_auf_ergebnis(self, pruefungsdatum: date | None = None) -> None:
         self.status = Modulstatus.WARTE_AUF_ERGEBNIS
         self.pruefungsdatum = pruefungsdatum or date.today()
 
-    def schliesse_ab(self, abschlussdatum: date | None = None) -> None:
+    def _schliesse_ab(self, abschlussdatum: date | None = None) -> None:
         self.status = Modulstatus.ABGESCHLOSSEN
         self.abschlussdatum = abschlussdatum or date.today()
 
