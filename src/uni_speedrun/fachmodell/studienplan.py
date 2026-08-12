@@ -39,7 +39,7 @@ class Studienplan:
     def modul_reihenfolge(self):
         return sorted(self.module, key=lambda x: x.reihenfolge)
 
-    def aktives_modul(self):
+    def zeige_aktives_modul(self):
         for modul in self.module:
             if modul.status == Modulstatus.AKTIV:
                 return modul
@@ -47,7 +47,7 @@ class Studienplan:
             return None
 
     def aktiviere_modul(self, modul):
-            if self.aktives_modul() is None:
+            if self.zeige_aktives_modul() is None:
                 modul._aktivieren()
                 print(f"Modul: {modul.name} wurde aktiviert")
             else:
@@ -83,3 +83,21 @@ class Studienplan:
 
         modul._warte_auf_ergebnis()
         print(f"Modul: {modul.name} wurde erfolgreich auf WARTE_AUF_ERGEBNIS gesetzt.")     
+
+        def naechstes_modul(self):
+            if self.zeige_aktives_modul() is not None:
+                raise ValueError("Es ist bereits ein Modul aktiv.")
+
+
+            offene_module = [
+                modul for modul in self.module
+                if modul.status == Modulstatus.GEPLANT
+            ]
+
+            if not offene_module:
+                return None
+        
+            return min(
+                offene_module,
+                key=lambda modul: modul.reihenfolge
+            )
