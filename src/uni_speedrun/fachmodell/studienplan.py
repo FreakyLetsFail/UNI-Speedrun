@@ -1,9 +1,19 @@
 from .modul import Modul, Modulstatus
+from datetime import date
+from dateutil.relativedelta import relativedelta
+
 
 class Studienplan:
-    def __init__(self, module: list[Modul]):
+    def __init__(self, module: list[Modul], studienziel_name, zielects, zieldauer):
         self.module = module
+        self.studienziel_name = studienziel_name
+        self.zielects = zielects
+        self.zieldauer = zieldauer
+        self.startdatum = date.today()
     
+
+    def zieldatum(self):
+        return self.startdatum + relativedelta(months=self.zieldauer)
 
     def berechne_ects(self):
         ects_points = 0
