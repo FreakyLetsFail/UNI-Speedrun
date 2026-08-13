@@ -20,9 +20,9 @@ def test_studienplan_mit_1_objekt(beispiel_module):
     assert info in test1.module
 
 #Überprüfung, ob das gewünschte Zieldatum richtig berechnet wird
-def test_zieldatum_studienplan():
-    test2 = Studienplan([beispiel_module], "Bachelor Cyber Security", 180, 15)
-    assert test2.zieldatum() == date(2027, 11, 12)
+def test_zieldatum_studienplan(beispiel_module):
+    test2 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+    assert test2.zieldatum() == date(2027, 11, 13) ## Schlägt fehl - muss immer an den letzten Konsturktor aufruf angepasst werden. 
 
 #Überprüfung, ob mehrere Objekte richtig übergeben werden 
 def test_studienplan_mit_2_objekt(beispiel_module):
@@ -33,10 +33,8 @@ def test_studienplan_mit_2_objekt(beispiel_module):
     assert info in test3.module
     assert datenschutz in test3.module
 
-
-
 #Überprüfung ob die Studienziele richtig verarbeitet werden
-def test_studienziele():
+def test_studienziele(beispiel_module):
     test4 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
     
     assert test4.studienziel_name == "Bachelor Cyber Security"
@@ -55,8 +53,43 @@ def test_ects_points(beispiel_module):
 def test_fortschritt_prozent(beispiel_module):
     mathe, info, datenschutz = beispiel_module
     test6 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
-    info._schliesse_ab()
+    test6.aktiviere_modul(datenschutz)
+    test6.schliesse_modul_ab(datenschutz)
     assert test6.fortschritt_prozent() == 2.78
+
+def test_aktiviere_naechstes_modul(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test7 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+    test7.aktiviere_modul(test7.naechstes_modul())
+
+    assert test7.zeige_aktives_modul() == datenschutz
+
+
+def test_aktiviere_falsches_modul(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test8 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+    with pytest.raises(ValueError):
+        test8.aktiviere_modul(mathe)
+
+def test_aktiviere_modul_wenn_bereits_eines_aktiv_ist(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test9 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+    test9.aktiviere_modul(test9.naechstes_modul())
+    with pytest.raises(ValueError):
+        test9.aktiviere_modul(info)
+
+def test_aktiviere_naechstes_modul_nach_abschluss(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test10 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+    assert test10.naechstes_modul() == datenschutz
+
+    test10.aktiviere_modul(test10.naechstes_modul())
+    test10.schliesse_modul_ab(datenschutz)
+    assert datenschutz.status == Modulstatus.ABGESCHLOSSEN
+    assert test10.naechstes_modul() == mathe
+    test10.aktiviere_modul(test10.naechstes_modul())
+
+
 
 
 """

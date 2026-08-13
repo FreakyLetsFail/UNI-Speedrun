@@ -46,16 +46,21 @@ class Studienplan:
         else:
             return None
 
+# Modul aktivieren
     def aktiviere_modul(self, modul):
             if self.zeige_aktives_modul() is None:
-                modul._aktivieren()
-                print(f"Modul: {modul.name} wurde aktiviert")
+                if modul == self.naechstes_modul():
+                    modul._aktivieren()
+                    print(f"Modul: {modul.name} wurde aktiviert")
+                else:
+                    raise ValueError(f"Aktivieren nicht möglich! Das Modul {self.naechstes_modul()} ist nicht in der Reihenfolge als nächstes dran!")
             else:
-                aktives = self.aktives_modul()
+                aktives = self.zeige_aktives_modul()
                 raise ValueError(
-                    f"Aktiven nicht möglich! Das modul {aktives.name} ist bereits aktiv."
+                    f"Aktiviren nicht möglich! Das modul {aktives.name} ist bereits aktiv."
                     )
 
+#Modul abschließen 
     def schliesse_modul_ab(self, modul):
         if modul.status == Modulstatus.ABGESCHLOSSEN:
             raise ValueError(
@@ -70,6 +75,8 @@ class Studienplan:
         modul._schliesse_ab()
         print(f"Modul: {modul.name} wurde erfolgreich abgeschlossen.")
 
+
+#Modul auf WARTE_AUF_ERGEBNIS setzen
     def modul_in_bewertung_versetzen(self, modul):
         if modul.status == Modulstatus.WARTE_AUF_ERGEBNIS:
             raise ValueError(
@@ -84,20 +91,20 @@ class Studienplan:
         modul._warte_auf_ergebnis()
         print(f"Modul: {modul.name} wurde erfolgreich auf WARTE_AUF_ERGEBNIS gesetzt.")     
 
-        def naechstes_modul(self):
-            if self.zeige_aktives_modul() is not None:
-                raise ValueError("Es ist bereits ein Modul aktiv.")
+    def naechstes_modul(self):
+        if self.zeige_aktives_modul() is not None:
+            raise ValueError("Es ist bereits ein Modul aktiv.")
 
 
-            offene_module = [
-                modul for modul in self.module
-                if modul.status == Modulstatus.GEPLANT
-            ]
+        offene_module = [
+            modul for modul in self.module
+            if modul.status == Modulstatus.GEPLANT
+        ]
 
-            if not offene_module:
-                return None
+        if not offene_module:
+            return None
         
-            return min(
-                offene_module,
-                key=lambda modul: modul.reihenfolge
+        return min(
+            offene_module,
+            key=lambda modul: modul.reihenfolge
             )
