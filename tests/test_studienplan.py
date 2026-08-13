@@ -157,6 +157,113 @@ def test_ergebnis_eintragen_bestanden_falsche_note(beispiel_module):
     with pytest.raises(ValueError):
         test16.ergebnis_eintragen(datenschutz, True, 5.0)
 
+
+
+def test_aktualisiere_zeitplan(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+
+    test17 = Studienplan(
+        beispiel_module,
+        "Bachelor Cyber Security",
+        180,
+        15
+    )
+
+    test17.startdatum = date(2026, 9, 1)
+
+    test17.aktualisiere_zeitplan()
+
+    assert datenschutz.startdatum == date(2026, 9, 1)
+    assert mathe.startdatum == date(2026, 9, 15)
+    assert info.startdatum == date(2026, 9, 29)
+
+
+def test_aktualisiere_zeitplan_ueberspringt_abgeschlossene_module(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+
+    test18 = Studienplan(
+        beispiel_module,
+        "Bachelor Cyber Security",
+        180,
+        15
+    )
+
+    datenschutz._aktivieren(date(2026, 8, 1))
+    datenschutz._schliesse_ab(date(2026, 8, 10))
+
+    test18.startdatum = date(2026, 9, 1)
+
+    test18.aktualisiere_zeitplan()
+
+    assert mathe.startdatum == date(2026, 9, 1)
+    assert info.startdatum == date(2026, 9, 15)
+
+
+def test_aktualisiere_zeitplan_warte_auf_ergebnis(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+
+    test19 = Studienplan(
+        beispiel_module,
+        "Bachelor Cyber Security",
+        180,
+        15
+    )
+
+    test19.startdatum = date(2026, 9, 1)
+
+    datenschutz._aktivieren(date(2026, 9, 1))
+    datenschutz._warte_auf_ergebnis(date(2026, 9, 9))
+
+    test19.aktualisiere_zeitplan()
+
+    assert mathe.startdatum == date(2026, 9, 9)
+
+
+def test_aktualisiere_zeitplan_nach_nicht_bestanden(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+
+    test20 = Studienplan(
+        beispiel_module,
+        "Bachelor Cyber Security",
+        180,
+        15
+    )
+
+    test20.startdatum = date(2026, 9, 1)
+
+    datenschutz._aktivieren(date(2026, 9, 1))
+    datenschutz._warte_auf_ergebnis(date(2026, 9, 9))
+
+    # Prüfung nicht bestanden
+    test20.ergebnis_eintragen(
+        datenschutz,
+        bestanden=False,
+        note=None
+    )
+
+    assert datenschutz.status == Modulstatus.GEPLANT
+
+    # Mathe wird zuerst bearbeitet
+    mathe._aktivieren(date(2026, 9, 9))
+    mathe._schliesse_ab(date(2026, 9, 23))
+
+    test20.aktualisiere_zeitplan()
+
+    assert datenschutz.startdatum == date(2026, 9, 23)
+    assert datenschutz.geplante_dauer_tage == 14
+
+def test_prognostiziertes_studienende(beispiel_module):
+    test21 = Studienplan(
+        beispiel_module,
+        "Bachelor Cyber Security",
+        180,
+        15
+    )
+
+    test21.startdatum = date(2026, 9, 1)
+
+    assert plan.prognostiziertes_studienende() == date(2026, 10, 13)
+
 """
 
 

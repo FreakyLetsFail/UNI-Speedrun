@@ -132,28 +132,55 @@ class Studienplan:
 
 
     def aktualisiere_zeitplan(self):
-        aktuelle_startdatum = self.startdatum
+        aktuelles_datum = self.startdatum
 
         for modul in self.modul_reihenfolge():
 
             if modul.status == Modulstatus.ABGESCHLOSSEN:
-                aktuelle_startdatum = modul.abschlussdatum
+                if modul.abschlussdatum is not None:
+                    aktuelles_datum = modul.abschlussdatum
+                continue
 
-            elif modul.status == Modulstatus.AKTIV:
-                if modul.startdatum is None:
-                    modul.startdatum = aktuelle_startdatum
-
-                aktuelle_startdatum = modul.startdatum + relativedelta(
-                    days=modul.geplante_dauer_tage
-                )
-
-            elif modul.status == Modulstatus.GEPLANT:
-                modul.startdatum = aktuelle_startdatum
-
-                aktuelle_startdatum = modul.startdatum + relativedelta(
-                    days=modul.geplante_dauer_tage
-                )
-
-            elif modul.status == Modulstatus.WARTE_AUF_ERGEBNIS:
+            if modul.status == Modulstatus.WARTE_AUF_ERGEBNIS:
                 if modul.pruefungsdatum is not None:
-                    aktuelle_startdatum = modul.pruefungsdatum
+                    aktuelles_datum = modul.pruefungsdatum
+                continue
+
+            if modul.status == Modulstatus.AKTIV:
+                if modul.startdatum is None:
+                    modul.startdatum = aktuelles_datum
+
+                aktuelles_datum = (
+                    modul.startdatum
+                    + relativedelta(days=modul.geplante_dauer_tage)
+                )
+                continue
+
+            if modul.status == Modulstatus.GEPLANT:
+                modul.startdatum = aktuelles_datum
+
+                aktuelles_datum = (
+                    modul.startdatum
+                    + relativedelta(days=modul.geplante_dauer_tage)
+                )
+
+
+    def prognostiziertes_studienende(self):
+        self.aktualisiere_zeitplan()
+
+        offene_module = [
+            modul for modul in self.module
+            if modul.status != Modulstatus.ABGESCHLOSSEN
+        ]
+
+        if not offene_module:
+            return None
+
+        letztes_modul = max(
+            offene_module,
+            key=lambda modul: modul.startdatum
+        )
+
+        return letztes_modul.startdatum + relativedelta(
+            days=letztes_modul.geplante_dauer_tage
+        )
