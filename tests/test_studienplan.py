@@ -122,6 +122,41 @@ def test_modul_in_bewertung_nicht_doppelt(beispiel_module):
 
     with pytest.raises(ValueError):
         test13.modul_in_bewertung_versetzen(datenschutz)
+
+
+def test_ergebnis_eintragen_bestanden(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test14 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+
+    test14.aktiviere_modul(datenschutz)
+    test14.modul_in_bewertung_versetzen(datenschutz)
+    test14.ergebnis_eintragen(datenschutz, True, 2.1)
+
+    assert datenschutz.status == Modulstatus.ABGESCHLOSSEN
+    assert datenschutz.note == 2.1
+
+def test_ergebnis_eintragen_nicht_bestanden(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test15 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+
+    test15.aktiviere_modul(datenschutz)
+    test15.modul_in_bewertung_versetzen(datenschutz)
+    test15.ergebnis_eintragen(datenschutz, False, 5.0)
+
+    assert datenschutz.status == Modulstatus.GEPLANT
+
+
+def test_ergebnis_eintragen_bestanden_falsche_note(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test16 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+
+    test16.aktiviere_modul(datenschutz)
+    test16.modul_in_bewertung_versetzen(datenschutz)
+
+
+    with pytest.raises(ValueError):
+        test16.ergebnis_eintragen(datenschutz, True, 5.0)
+
 """
 
 
