@@ -89,9 +89,39 @@ def test_aktiviere_naechstes_modul_nach_abschluss(beispiel_module):
     assert test10.naechstes_modul() == mathe
     test10.aktiviere_modul(test10.naechstes_modul())
 
+def test_naechstes_modul_trotz_warten_auf_ergebnis(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test11 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+
+    test11.aktiviere_modul(datenschutz)
+
+    test11.modul_in_bewertung_versetzen(datenschutz)
+
+    assert datenschutz.status == Modulstatus.WARTE_AUF_ERGEBNIS
+    assert test11.naechstes_modul() == mathe
+
+    test11.aktiviere_modul(test11.naechstes_modul())
+
+    assert test11.zeige_aktives_modul() == mathe
 
 
+def test_bewertung_nur_fuer_aktives_modul(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test12 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
 
+    with pytest.raises(ValueError):
+        test12.modul_in_bewertung_versetzen(datenschutz)
+
+
+def test_modul_in_bewertung_nicht_doppelt(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test13 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+
+    test13.aktiviere_modul(datenschutz)
+    test13.modul_in_bewertung_versetzen(datenschutz)
+
+    with pytest.raises(ValueError):
+        test13.modul_in_bewertung_versetzen(datenschutz)
 """
 
 

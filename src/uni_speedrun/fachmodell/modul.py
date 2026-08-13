@@ -30,11 +30,12 @@ class Modul:
         if reihenfolge <= 0:
             raise ValueError("Die Reihenfolge muss größer als 0 sein.")
         self.reihenfolge = reihenfolge
-        
+
         self.status = status
         self.startdatum = startdatum
         self.pruefungsdatum = pruefungsdatum
         self.abschlussdatum = abschlussdatum
+        self.note = None
 
     def _aktivieren(self, startdatum: date | None = None) -> None:
         self.status = Modulstatus.AKTIV

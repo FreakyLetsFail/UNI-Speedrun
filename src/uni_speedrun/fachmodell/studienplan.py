@@ -91,6 +91,8 @@ class Studienplan:
         modul._warte_auf_ergebnis()
         print(f"Modul: {modul.name} wurde erfolgreich auf WARTE_AUF_ERGEBNIS gesetzt.")     
 
+
+# Zeige welches Modul als nächstes laut reihenfolge kommt
     def naechstes_modul(self):
         if self.zeige_aktives_modul() is not None:
             raise ValueError("Es ist bereits ein Modul aktiv.")
@@ -108,3 +110,22 @@ class Studienplan:
             offene_module,
             key=lambda modul: modul.reihenfolge
             )
+    
+    def ergebnis_eintragen(self, modul, bestanden, note):
+        if modul.status != Modulstatus.WARTE_AUF_ERGEBNIS:
+            raise ValueError(
+                "Das ausgewählte Modul hat derzeit nicht den Status "
+                "WARTE_AUF_ERGEBNIS."
+            )
+
+        if bestanden:
+            if note < 1 or note > 4:
+                raise ValueError(
+                    "Zum Bestehen muss die Note zwischen 1 und 4 liegen."
+                )
+
+            modul.note = note
+            modul._schliesse_ab()
+
+        else:
+            modul.status = Modulstatus.GEPLANT
