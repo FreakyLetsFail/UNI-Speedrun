@@ -3,6 +3,8 @@ from datetime import date
 import pytest  # <-- WICHTIG für pytest.raises
 from uni_speedrun.fachmodell.modul import Modul, Modulstatus
 from uni_speedrun.fachmodell.studienplan import Studienplan
+from dateutil.relativedelta import relativedelta
+
 
 
 # Fixture liefert vor jedem Test frische Modul-Objekte zurück
@@ -262,7 +264,85 @@ def test_prognostiziertes_studienende(beispiel_module):
 
     test21.startdatum = date(2026, 9, 1)
 
-    assert plan.prognostiziertes_studienende() == date(2026, 10, 13)
+    assert test21.prognostiziertes_studienende() == date(2026, 10, 13)
+
+
+# Überprüfung des prognostizierten Studienendes
+def test_prognostiziertes_studienende(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+
+    test22 = Studienplan(
+        beispiel_module,
+        "Bachelor Cyber Security",
+        180,
+        15
+    )
+
+    test22.startdatum = date(2026, 9, 1)
+
+    test22.aktualisiere_zeitplan()
+
+    assert test22.prognostiziertes_studienende() == date(2026, 10, 13)
+
+
+# Überprüfung: Studienende wenn alle Module abgeschlossen sind
+def test_prognostiziertes_studienende_wenn_alle_module_abgeschlossen(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+
+    test23 = Studienplan(
+        beispiel_module,
+        "Bachelor Cyber Security",
+        180,
+        15
+    )
+
+    datenschutz._aktivieren(date(2026, 9, 1))
+    datenschutz._schliesse_ab(date(2026, 9, 15))
+
+    mathe._aktivieren(date(2026, 9, 15))
+    mathe._schliesse_ab(date(2026, 9, 29))
+
+    info._aktivieren(date(2026, 9, 29))
+    info._schliesse_ab(date(2026, 10, 13))
+
+    assert test23.prognostiziertes_studienende() is None
+
+
+# Überprüfung der Abweichung vom geplanten Zieldatum
+def test_abweichung_zum_zieldatum(beispiel_module):
+    test24 = Studienplan(
+        beispiel_module,
+        "Bachelor Cyber Security",
+        180,
+        15
+    )
+
+    test24.startdatum = date(2026, 9, 1)
+
+    test24.aktualisiere_zeitplan()
+
+    assert test24.abweichung_zum_zieldatum().days == -414
+
+
+# Überprüfung: Abweichung wenn Studienende nach Zieldatum liegt
+def test_abweichung_zum_zieldatum_nach_zieldatum(beispiel_module):
+    test25 = Studienplan(
+        beispiel_module,
+        "Bachelor Cyber Security",
+        180,
+        1
+    )
+
+    test25.startdatum = date(2026, 9, 1)
+
+    test25.aktualisiere_zeitplan()
+
+    assert test25.abweichung_zum_zieldatum().days == 12
+
+
+
+
+
 
 """
 

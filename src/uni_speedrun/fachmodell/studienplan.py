@@ -134,29 +134,39 @@ class Studienplan:
     def aktualisiere_zeitplan(self):
         aktuelles_datum = self.startdatum
 
+        for modul in self.module:
+            if modul.status == Modulstatus.ABGESCHLOSSEN:
+                if (
+                    modul.abschlussdatum is not None
+                    and modul.abschlussdatum > aktuelles_datum
+                ):
+                    aktuelles_datum = modul.abschlussdatum
+
+            elif modul.status == Modulstatus.WARTE_AUF_ERGEBNIS:
+                if (
+                    modul.pruefungsdatum is not None
+                    and modul.pruefungsdatum > aktuelles_datum
+                ):
+                    aktuelles_datum = modul.pruefungsdatum
+
         for modul in self.modul_reihenfolge():
 
             if modul.status == Modulstatus.ABGESCHLOSSEN:
-                if modul.abschlussdatum is not None:
-                    aktuelles_datum = modul.abschlussdatum
                 continue
 
             if modul.status == Modulstatus.WARTE_AUF_ERGEBNIS:
-                if modul.pruefungsdatum is not None:
-                    aktuelles_datum = modul.pruefungsdatum
                 continue
 
             if modul.status == Modulstatus.AKTIV:
-                if modul.startdatum is None:
+                if modul.startdatum is None or modul.startdatum < aktuelles_datum:
                     modul.startdatum = aktuelles_datum
 
                 aktuelles_datum = (
                     modul.startdatum
                     + relativedelta(days=modul.geplante_dauer_tage)
                 )
-                continue
 
-            if modul.status == Modulstatus.GEPLANT:
+            elif modul.status == Modulstatus.GEPLANT:
                 modul.startdatum = aktuelles_datum
 
                 aktuelles_datum = (
@@ -184,3 +194,6 @@ class Studienplan:
         return letztes_modul.startdatum + relativedelta(
             days=letztes_modul.geplante_dauer_tage
         )
+
+    def abweichung_zum_zieldatum(self):
+        return self.prognostiziertes_studienende() - self.zieldatum()
