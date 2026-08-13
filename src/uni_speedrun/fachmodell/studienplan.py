@@ -129,3 +129,31 @@ class Studienplan:
 
         else:
             modul.status = Modulstatus.GEPLANT
+
+
+    def aktualisiere_zeitplan(self):
+        aktuelle_startdatum = self.startdatum
+
+        for modul in self.modul_reihenfolge():
+
+            if modul.status == Modulstatus.ABGESCHLOSSEN:
+                aktuelle_startdatum = modul.abschlussdatum
+
+            elif modul.status == Modulstatus.AKTIV:
+                if modul.startdatum is None:
+                    modul.startdatum = aktuelle_startdatum
+
+                aktuelle_startdatum = modul.startdatum + relativedelta(
+                    days=modul.geplante_dauer_tage
+                )
+
+            elif modul.status == Modulstatus.GEPLANT:
+                modul.startdatum = aktuelle_startdatum
+
+                aktuelle_startdatum = modul.startdatum + relativedelta(
+                    days=modul.geplante_dauer_tage
+                )
+
+            elif modul.status == Modulstatus.WARTE_AUF_ERGEBNIS:
+                if modul.pruefungsdatum is not None:
+                    aktuelle_startdatum = modul.pruefungsdatum
