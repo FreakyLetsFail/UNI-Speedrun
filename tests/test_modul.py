@@ -40,7 +40,7 @@ def test_modul_wird_aktiviert():
     )
     startdatum = date(2026, 8, 10)
 
-    modul.aktivieren(startdatum)
+    modul._aktivieren(startdatum)
 
     assert modul.status is Modulstatus.AKTIV
     assert modul.startdatum == startdatum
@@ -53,7 +53,7 @@ def test_enddatum_wird_berechnet():
         geplante_dauer_tage=14,
         reihenfolge=1,
     )
-    modul.aktivieren(date(2026, 8, 10))
+    modul._aktivieren(date(2026, 8, 10))
 
     enddatum = modul.berechne_enddatum()
 
@@ -67,7 +67,7 @@ def test_restzeit_wird_berechnet():
         geplante_dauer_tage=14,
         reihenfolge=1,
     )
-    modul.aktivieren(date(2026, 8, 10))
+    modul._aktivieren(date(2026, 8, 10))
 
     restzeit = modul.berechne_restzeit(date(2026, 8, 20))
 
@@ -81,7 +81,7 @@ def test_ueberfaelliges_modul_hat_negative_restzeit():
         geplante_dauer_tage=14,
         reihenfolge=1,
     )
-    modul.aktivieren(date(2026, 8, 10))
+    modul._aktivieren(date(2026, 8, 10))
 
     restzeit = modul.berechne_restzeit(date(2026, 8, 27))
 
@@ -95,10 +95,10 @@ def test_modul_wird_abgeschlossen():
         geplante_dauer_tage=14,
         reihenfolge=1,
     )
-    modul.aktivieren(date(2026, 8, 10))
+    modul._aktivieren(date(2026, 8, 10))
     abschlussdatum = date(2026, 8, 22)
 
-    modul.schliesse_ab(abschlussdatum)
+    modul._schliesse_ab(abschlussdatum)
 
     assert modul.status is Modulstatus.ABGESCHLOSSEN
     assert modul.abschlussdatum == abschlussdatum

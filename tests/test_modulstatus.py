@@ -14,4 +14,4 @@ def test_modulstatus_koennen_aus_text_erzeugt_werden() -> None:
 
 
 def test_modulstatus_hat_genau_drei_werte() -> None:
-    assert len(Modulstatus) == 3
+    assert len(Modulstatus) == 4

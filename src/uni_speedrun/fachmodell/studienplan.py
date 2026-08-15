@@ -1,11 +1,20 @@
-from .modul import Modul, Modulstatus
 from datetime import date
+
 from dateutil.relativedelta import relativedelta
+
+from .modul import Modul
+from .modulstatus import Modulstatus
 
 
 class Studienplan:
-    def __init__(self, module: list[Modul], studienziel_name, zielects, zieldauer):
-
+    def __init__(
+        self,
+        module: list[Modul],
+        studienziel_name: str,
+        zielects: int,
+        zieldauer: int,
+        startdatum: date | None = None,
+    ) -> None:
         reihenfolge = [modul.reihenfolge for modul in module]
 
         if len(reihenfolge) != len(set(reihenfolge)):
@@ -17,51 +26,50 @@ class Studienplan:
         self.studienziel_name = studienziel_name
         self.zielects = zielects
         self.zieldauer = zieldauer
-        self.startdatum = date.today()
-    
+        self.startdatum = startdatum or date.today()
 
-
-
-    def zieldatum(self):
+    def zieldatum(self) -> date:
         return self.startdatum + relativedelta(months=self.zieldauer)
 
-    def erreichte_ects(self):
+    def erreichte_ects(self) -> int:
         ects_points = 0
+
         for modul in self.module:
             if modul.status == Modulstatus.ABGESCHLOSSEN:
                 ects_points += modul.ects
-        
-        return ects_points
-    
-    def fortschritt_prozent(self):
-        return round((self.erreichte_ects() / self.zielects)*100,2)
 
-    def modul_reihenfolge(self):
+        return ects_points
+
+    def fortschritt_prozent(self) -> float:
+        return round((self.erreichte_ects() / self.zielects) * 100, 2)
+
+    def modul_reihenfolge(self) -> list[Modul]:
         return sorted(self.module, key=lambda x: x.reihenfolge)
 
-    def zeige_aktives_modul(self):
+    def zeige_aktives_modul(self) -> Modul | None:
         for modul in self.module:
             if modul.status == Modulstatus.AKTIV:
                 return modul
-        else:
-            return None
 
-# Modul aktivieren
-    def aktiviere_modul(self, modul):
-            if self.zeige_aktives_modul() is None:
-                if modul == self.naechstes_modul():
-                    modul._aktivieren()
-                    print(f"Modul: {modul.name} wurde aktiviert")
-                else:
-                    raise ValueError(f"Aktivieren nicht möglich! Das Modul {self.naechstes_modul()} ist nicht in der Reihenfolge als nächstes dran!")
+        return None
+
+    def aktiviere_modul(self, modul: Modul) -> None:
+        if self.zeige_aktives_modul() is None:
+            if modul == self.naechstes_modul():
+                modul._aktivieren()
             else:
-                aktives = self.zeige_aktives_modul()
                 raise ValueError(
-                    f"Aktiviren nicht möglich! Das modul {aktives.name} ist bereits aktiv."
-                    )
+                    f"Aktivieren nicht möglich! "
+                    f"Das nächste Modul ist {self.naechstes_modul().name}."
+                )
+        else:
+            aktives = self.zeige_aktives_modul()
+            raise ValueError(
+                f"Aktivieren nicht möglich! "
+                f"Das Modul {aktives.name} ist bereits aktiv."
+            )
 
-#Modul abschließen 
-    def schliesse_modul_ab(self, modul):
+    def schliesse_modul_ab(self, modul: Modul) -> None:
         if modul.status == Modulstatus.ABGESCHLOSSEN:
             raise ValueError(
                 f"Das Modul {modul.name} ist bereits abgeschlossen."
@@ -69,49 +77,51 @@ class Studienplan:
 
         if modul.status != Modulstatus.AKTIV:
             raise ValueError(
-                f"Das Modul {modul.name} ist nicht aktiv und kann nicht abgeschlossen werden."
+                f"Das Modul {modul.name} ist nicht aktiv "
+                "und kann nicht abgeschlossen werden."
             )
 
         modul._schliesse_ab()
-        print(f"Modul: {modul.name} wurde erfolgreich abgeschlossen.")
 
-
-#Modul auf WARTE_AUF_ERGEBNIS setzen
-    def modul_in_bewertung_versetzen(self, modul):
+    def modul_in_bewertung_versetzen(self, modul: Modul) -> None:
         if modul.status == Modulstatus.WARTE_AUF_ERGEBNIS:
             raise ValueError(
-                f"Das Modul {modul.name} ist bereits auf WARTE_AUF_ERGEBNIS."
+                f"Das Modul {modul.name} ist bereits auf "
+                "WARTE_AUF_ERGEBNIS."
             )
 
         if modul.status != Modulstatus.AKTIV:
             raise ValueError(
-                f"Das Modul {modul.name} ist nicht aktiv und kann nicht auf WARTE_AUF_ERGEBNIS gesetzt werden."
+                f"Das Modul {modul.name} ist nicht aktiv und kann "
+                "nicht auf WARTE_AUF_ERGEBNIS gesetzt werden."
             )
 
         modul._warte_auf_ergebnis()
-        print(f"Modul: {modul.name} wurde erfolgreich auf WARTE_AUF_ERGEBNIS gesetzt.")     
 
-
-# Zeige welches Modul als nächstes laut reihenfolge kommt
-    def naechstes_modul(self):
+    def naechstes_modul(self) -> Modul | None:
         if self.zeige_aktives_modul() is not None:
             raise ValueError("Es ist bereits ein Modul aktiv.")
 
-
         offene_module = [
-            modul for modul in self.module
+            modul
+            for modul in self.module
             if modul.status == Modulstatus.GEPLANT
         ]
 
         if not offene_module:
             return None
-        
+
         return min(
             offene_module,
-            key=lambda modul: modul.reihenfolge
-            )
-    
-    def ergebnis_eintragen(self, modul, bestanden, note):
+            key=lambda modul: modul.reihenfolge,
+        )
+
+    def ergebnis_eintragen(
+        self,
+        modul: Modul,
+        bestanden: bool,
+        note: float,
+    ) -> None:
         if modul.status != Modulstatus.WARTE_AUF_ERGEBNIS:
             raise ValueError(
                 "Das ausgewählte Modul hat derzeit nicht den Status "
@@ -129,9 +139,11 @@ class Studienplan:
 
         else:
             modul.status = Modulstatus.GEPLANT
+            modul.startdatum = None
+            modul.pruefungsdatum = None
+            modul.note = None
 
-
-    def aktualisiere_zeitplan(self):
+    def aktualisiere_zeitplan(self) -> None:
         aktuelles_datum = self.startdatum
 
         for modul in self.module:
@@ -158,7 +170,10 @@ class Studienplan:
                 continue
 
             if modul.status == Modulstatus.AKTIV:
-                if modul.startdatum is None or modul.startdatum < aktuelles_datum:
+                if (
+                    modul.startdatum is None
+                    or modul.startdatum < aktuelles_datum
+                ):
                     modul.startdatum = aktuelles_datum
 
                 aktuelles_datum = (
@@ -174,12 +189,12 @@ class Studienplan:
                     + relativedelta(days=modul.geplante_dauer_tage)
                 )
 
-
-    def prognostiziertes_studienende(self):
+    def prognostiziertes_studienende(self) -> date | None:
         self.aktualisiere_zeitplan()
 
         offene_module = [
-            modul for modul in self.module
+            modul
+            for modul in self.module
             if modul.status != Modulstatus.ABGESCHLOSSEN
         ]
 
@@ -196,4 +211,9 @@ class Studienplan:
         )
 
     def abweichung_zum_zieldatum(self):
-        return self.prognostiziertes_studienende() - self.zieldatum()
+        prognose = self.prognostiziertes_studienende()
+
+        if prognose is None:
+            return None
+
+        return prognose - self.zieldatum()

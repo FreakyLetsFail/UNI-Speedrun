@@ -23,7 +23,7 @@ def test_studienplan_mit_1_objekt(beispiel_module):
 
 #Überprüfung, ob das gewünschte Zieldatum richtig berechnet wird
 def test_zieldatum_studienplan(beispiel_module):
-    test2 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+    test2 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15, startdatum=date(2026, 8, 13),)
     assert test2.zieldatum() == date(2027, 11, 13) ## Schlägt fehl - muss immer an den letzten Konsturktor aufruf angepasst werden. 
 
 #Überprüfung, ob mehrere Objekte richtig übergeben werden 
