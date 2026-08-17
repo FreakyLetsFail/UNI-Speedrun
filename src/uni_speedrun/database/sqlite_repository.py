@@ -42,7 +42,24 @@ class SQLiteStudienplanRepository(StudienplanRepository):
             """)
 
     def speichern(self, studienplan: Studienplan) -> None:
-        pass
+        with sqlite3.connect(self.datenbank_pfad) as con:
+            con.execute(
+                """
+                INSERT INTO studienplan (
+                    studienziel_name,
+                    zielects,
+                    zieldauer,
+                    startdatum
+                )
+                VALUES (?, ?, ?, ?)
+                """,
+                (
+                    studienplan.studienziel_name,
+                    studienplan.zielects,
+                    studienplan.zieldauer,
+                    studienplan.startdatum.isoformat(),
+                ),
+        )
 
     def laden(self) -> Studienplan | None:
         pass
