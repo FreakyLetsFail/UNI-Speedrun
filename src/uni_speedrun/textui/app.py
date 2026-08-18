@@ -1,11 +1,10 @@
-from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, Static
+from textual.app import App
 
 from uni_speedrun.database.repository import StudienplanRepository
+from uni_speedrun.textui.screens.dashboard_screen import DashboardScreen
 
 
 class UniSpeedrunApp(App):
-    """Textual-Anwendung für UNI Speedrun."""
 
     TITLE = "UNI Speedrun"
 
@@ -15,7 +14,7 @@ class UniSpeedrunApp(App):
         self.repository = repository
         self.studienplan = repository.laden()
 
-    def compose(self) -> ComposeResult:
-        yield Header()
-        yield Static("Willkommen bei UNI Speedrun!")
-        yield Footer()
+    def on_mount(self) -> None:
+        self.push_screen(
+            DashboardScreen(self.studienplan)
+        )
