@@ -27,3 +27,12 @@ class StartScreen(Screen):
         )
 
         yield Footer()
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "datenbank_oeffnen":
+            datenbank_pfad = self.query_one(
+                "#datenbank_pfad",
+                Input
+            ).value
+
+            self.app.oeffne_datenbank(datenbank_pfad)
