@@ -2,8 +2,9 @@ from textual.app import ComposeResult
 from textual.containers import Center, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Header, Input, Label
-
-
+from uni_speedrun.fachmodell.studienplan import Studienplan
+from uni_speedrun.textui.screens.dashboard_screen import DashboardScreen
+from uni_speedrun.textui.screens.modul_erstellen_screen import (ModulErstellenScreen,)
 class StudienplanErstellenScreen(Screen):
 
     def compose(self) -> ComposeResult:
@@ -90,4 +91,17 @@ class StudienplanErstellenScreen(Screen):
             )
             return
 
-        # Hier erstellen wir gleich den Studienplan.
+        studienplan = Studienplan(
+            [],
+            studienziel,
+            zielects,
+            zieldauer,
+        )
+
+        self.app.repository.speichern(studienplan)
+
+        self.app.pop_screen()
+
+        self.app.push_screen(
+            ModulErstellenScreen(studienplan)
+        )
