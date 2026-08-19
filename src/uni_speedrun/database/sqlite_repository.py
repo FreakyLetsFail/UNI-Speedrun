@@ -45,6 +45,14 @@ class SQLiteStudienplanRepository(StudienplanRepository):
 
     def speichern(self, studienplan: Studienplan) -> None:
         with sqlite3.connect(self.datenbank_pfad) as con:
+
+            con.execute("PRAGMA foreign_keys = ON")
+
+            # Aktuellen Studienplan ersetzen.
+            # Dadurch existiert immer genau ein aktueller Plan.
+            con.execute("DELETE FROM modul")
+            con.execute("DELETE FROM studienplan")
+
             cursor = con.execute(
                 """
                 INSERT INTO studienplan (
@@ -89,9 +97,15 @@ class SQLiteStudienplanRepository(StudienplanRepository):
                         modul.geplante_dauer_tage,
                         modul.reihenfolge,
                         modul.status.name,
-                        modul.startdatum.isoformat() if modul.startdatum else None,
-                        modul.pruefungsdatum.isoformat() if modul.pruefungsdatum else None,
-                        modul.abschlussdatum.isoformat() if modul.abschlussdatum else None,
+                        modul.startdatum.isoformat()
+                        if modul.startdatum
+                        else None,
+                        modul.pruefungsdatum.isoformat()
+                        if modul.pruefungsdatum
+                        else None,
+                        modul.abschlussdatum.isoformat()
+                        if modul.abschlussdatum
+                        else None,
                         modul.note,
                     ),
                 )

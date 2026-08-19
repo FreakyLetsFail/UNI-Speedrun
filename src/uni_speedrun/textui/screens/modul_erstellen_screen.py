@@ -249,14 +249,14 @@ class ModulErstellenScreen(Screen):
             module.append(modul)
 
         # Die fertigen Module an den aufrufenden Screen zurückgeben.
-            self.studienplan.module = module
+        self.studienplan.module = module
 
-            self.app.repository.speichern(
-                self.studienplan
+        self.app.repository.speichern(
+            self.studienplan
             )
 
-            self.app.pop_screen()
+        self.app.pop_screen()
 
-            self.app.push_screen(
-                DashboardScreen(self.studienplan)
+        self.app.push_screen(
+            DashboardScreen(self.studienplan)
             )
