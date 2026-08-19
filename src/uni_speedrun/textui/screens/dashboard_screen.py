@@ -1,7 +1,7 @@
 from textual.app import ComposeResult
 from textual.containers import Center, Vertical
 from textual.screen import Screen
-from textual.widgets import Footer, Header, Label, Static
+from textual.widgets import Footer, Label, Static
 
 from uni_speedrun.fachmodell.studienplan import Studienplan
 
@@ -13,7 +13,6 @@ class DashboardScreen(Screen):
         self.studienplan = studienplan
 
     def compose(self) -> ComposeResult:
-        yield Header()
 
         with Center():
             with Vertical():

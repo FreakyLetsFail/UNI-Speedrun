@@ -4,6 +4,7 @@ from textual.screen import Screen
 from textual.widgets import Button, Footer, Header, Input, Label, Select
 from uni_speedrun.fachmodell.modul import Modul
 from uni_speedrun.fachmodell.modulstatus import Modulstatus
+from uni_speedrun.textui.screens.dashboard_screen import DashboardScreen
 
 class ModulErstellenScreen(Screen):
     """
@@ -19,10 +20,11 @@ class ModulErstellenScreen(Screen):
         ("escape", "zurueck", "Zurück"),
     ]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, studienplan, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         # Enthält die Nummern der aktuell angelegten Module.
+        self.studienplan = studienplan
         self.modul_nummer = 0
 
     def compose(self) -> ComposeResult:
@@ -247,4 +249,14 @@ class ModulErstellenScreen(Screen):
             module.append(modul)
 
         # Die fertigen Module an den aufrufenden Screen zurückgeben.
-        self.dismiss(module)
+            self.studienplan.module = module
+
+            self.app.repository.speichern(
+                self.studienplan
+            )
+
+            self.app.pop_screen()
+
+            self.app.push_screen(
+                DashboardScreen(self.studienplan)
+            )

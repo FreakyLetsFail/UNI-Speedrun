@@ -1,12 +1,10 @@
 from textual.app import ComposeResult
 from textual.screen import Screen
-from textual.widgets import Header, Footer, Input, Button, Static
-
+from textual.widgets import Footer, Input, Button, Static
 
 class StartScreen(Screen):
 
     def compose(self) -> ComposeResult:
-        yield Header()
 
         yield Static(
             "Willkommen bei UNI Speedrun!"

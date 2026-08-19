@@ -98,10 +98,6 @@ class StudienplanErstellenScreen(Screen):
             zieldauer,
         )
 
-        self.app.repository.speichern(studienplan)
-
-        self.app.pop_screen()
-
         self.app.push_screen(
             ModulErstellenScreen(studienplan)
         )
