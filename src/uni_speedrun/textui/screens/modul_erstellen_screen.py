@@ -2,9 +2,8 @@ from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Header, Input, Label, Select
-
 from uni_speedrun.fachmodell.modul import Modul
-
+from uni_speedrun.fachmodell.modulstatus import Modulstatus
 
 class ModulErstellenScreen(Screen):
     """
@@ -129,6 +128,7 @@ class ModulErstellenScreen(Screen):
                 [
                     ("geplant", "geplant"),
                     ("begonnen", "begonnen"),
+                    ("warte auf Ergebnis", "warte_auf_ergebnis"),
                     ("abgeschlossen", "abgeschlossen"),
                 ],
                 value="geplant",
@@ -227,20 +227,19 @@ class ModulErstellenScreen(Screen):
                 return
 
             try:
+                status_enum = Modulstatus(status)
+
                 modul = Modul(
                     modulname,
                     ects,
-                    status,
                     dauer,
                     nummer,
+                    status_enum,
                 )
-            except TypeError:
-                # Falls dein aktuelles Fachmodell eine andere
-                # Reihenfolge der Parameter verwendet, wird hier
-                # bewusst eine verständliche Fehlermeldung angezeigt.
+
+            except ValueError as error:
                 self.notify(
-                    "Die Parameter des Modul-Fachmodells "
-                    "passen noch nicht zum Screen.",
+                    f"Modul {nummer}: {error}",
                     severity="error",
                 )
                 return
