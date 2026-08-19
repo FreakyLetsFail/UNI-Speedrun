@@ -1,0 +1,125 @@
+/* =========================
+   Allgemeines
+   ========================= */
+
+Screen {
+    padding: 0;
+}
+
+
+/* =========================
+   Modul-Erstellung
+   ========================= */
+
+#titel {
+    height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.modul-kopf {
+    height: 1;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.kopf {
+    text-style: bold;
+}
+
+
+/* =========================
+   Modul-Liste
+   ========================= */
+
+#modul-liste {
+    height: 1fr;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+
+/* =========================
+   Einzelne Modulzeile
+   ========================= */
+
+.modul-zeile {
+    height: 3;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    layout: horizontal;
+}
+
+
+/* =========================
+   Spalten
+   ========================= */
+
+.nr {
+    width: 5;
+    min-width: 5;
+    padding: 1 0;
+}
+
+.modulname {
+    width: 1fr;
+}
+
+.ects {
+    width: 8;
+    min-width: 8;
+}
+
+.status {
+    width: 16;
+    min-width: 16;
+}
+
+.dauer {
+    width: 12;
+    min-width: 12;
+}
+
+
+/* =========================
+   Eingabefelder
+   ========================= */
+
+.modul-zeile Input {
+    height: 3;
+    margin: 0;
+}
+
+.modul-zeile Select {
+    height: 3;
+    margin: 0;
+}
+
+
+/* =========================
+   Buttons
+   ========================= */
+
+#aktionen {
+    height: 3;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+#aktionen Button {
+    height: 3;
+    margin: 0 1 0 0;
+}
+
+
+/* =========================
+   Footer
+   ========================= */
+
+Footer {
+    height: 1;
+}

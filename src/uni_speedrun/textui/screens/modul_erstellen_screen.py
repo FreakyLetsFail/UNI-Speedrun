@@ -1,126 +1,251 @@
 from textual.app import ComposeResult
-from textual.containers import Center, Vertical
+from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.screen import Screen
-from textual.widgets import Button, Footer, Header, Input, Label
+from textual.widgets import Button, Footer, Header, Input, Label, Select
 
 from uni_speedrun.fachmodell.modul import Modul
 
 
 class ModulErstellenScreen(Screen):
+    """
+    Screen zum Erstellen mehrerer Module.
 
-    def __init__(self, studienplan):
-        super().__init__()
-        self.studienplan = studienplan
+    Module werden zunächst in der Oberfläche gesammelt.
+    Erst bei "Fertig" werden sie als Fachmodell-Objekte erzeugt.
+    """
+
+    BINDINGS = [
+        ("f2", "neues_modul", "Neues Modul"),
+        ("f10", "fertig", "Fertig"),
+        ("escape", "zurueck", "Zurück"),
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Enthält die Nummern der aktuell angelegten Module.
+        self.modul_nummer = 0
 
     def compose(self) -> ComposeResult:
         yield Header()
 
-        with Center():
-            with Vertical():
+        yield Label(
+            "Modul erstellen",
+            id="titel",
+        )
 
-                yield Label(
-                    "Modul erstellen",
-                    id="titel",
-                )
+        # Tabellenkopf
+        yield Horizontal(
+            Label("Nr.", classes="kopf nr"),
+            Label("Modulname", classes="kopf modulname"),
+            Label("ECTS", classes="kopf ects"),
+            Label("Status", classes="kopf status"),
+            Label("Dauer", classes="kopf dauer"),
+            classes="modul-kopf",
+        )
 
-                yield Label("Modulname:")
+        yield VerticalScroll(
+            id="modul-liste",
+        )
 
-                yield Input(
-                    placeholder="z. B. Python OOP",
-                    id="name",
-                )
-
-                yield Label("ECTS:")
-
-                yield Input(
-                    placeholder="z. B. 5",
-                    id="ects",
-                )
-
-                yield Label("Geplante Dauer in Tagen:")
-
-                yield Input(
-                    placeholder="z. B. 14",
-                    id="geplante-dauer",
-                )
-
-                yield Label("Reihenfolge:")
-
-                yield Input(
-                    placeholder="z. B. 1",
-                    id="reihenfolge",
-                )
-
-                yield Button(
-                    "Modul erstellen",
-                    id="modul-erstellen",
-                )
-
-                yield Button(
-                    "Zurück",
-                    id="zurueck",
-                )
+        yield Horizontal(
+            Button(
+                "+ Modul",
+                id="neues-modul",
+            ),
+            Button(
+                "Fertig",
+                id="fertig",
+                variant="success",
+            ),
+            Button(
+                "Zurück",
+                id="zurueck",
+            ),
+            id="aktionen",
+        )
 
         yield Footer()
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
+    def on_mount(self) -> None:
+        """
+        Beim Öffnen direkt das erste Modul anlegen.
+        """
+        self.neues_modul()
 
-        if event.button.id == "zurueck":
-            self.app.pop_screen()
-            return
+    def action_neues_modul(self) -> None:
+        self.neues_modul()
 
-        if event.button.id == "modul-erstellen":
-            self.modul_erstellen()
+    def action_fertig(self) -> None:
+        self.module_fertig()
 
-    def modul_erstellen(self) -> None:
-
-        name = self.query_one("#name", Input).value
-        ects_text = self.query_one("#ects", Input).value
-        dauer_text = self.query_one("#geplante-dauer", Input).value
-        reihenfolge_text = self.query_one("#reihenfolge", Input).value
-
-        if not name:
-            self.notify(
-                "Bitte einen Modulnamen eingeben.",
-                severity="error",
-            )
-            return
-
-        try:
-            ects = int(ects_text)
-            geplante_dauer = int(dauer_text)
-            reihenfolge = int(reihenfolge_text)
-
-        except ValueError:
-            self.notify(
-                "ECTS, Dauer und Reihenfolge müssen Zahlen sein.",
-                severity="error",
-            )
-            return
-
-        try:
-            modul = Modul(
-                name=name,
-                ects=ects,
-                geplante_dauer_tage=geplante_dauer,
-                reihenfolge=reihenfolge,
-            )
-
-        except ValueError as fehler:
-            self.notify(
-                str(fehler),
-                severity="error",
-            )
-            return
-
-        self.studienplan.module.append(modul)
-
-        self.app.repository.speichern(
-            self.studienplan
-        )
-
-        self.notify(
-            f"Modul '{modul.name}' wurde erstellt."
-        )
-
+    def action_zurueck(self) -> None:
         self.app.pop_screen()
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "neues-modul":
+            self.neues_modul()
+
+        elif event.button.id == "fertig":
+            self.module_fertig()
+
+        elif event.button.id == "zurueck":
+            self.app.pop_screen()
+
+    def neues_modul(self) -> None:
+        """
+        Fügt eine neue Modulzeile hinzu.
+
+        Wichtig:
+        Die Widgets werden direkt beim Erzeugen der Horizontal-Zeile
+        übergeben. Dadurch entsteht kein MountError.
+        """
+
+        self.modul_nummer += 1
+        nummer = self.modul_nummer
+
+        liste = self.query_one("#modul-liste", VerticalScroll)
+
+        zeile = Horizontal(
+            Label(
+                f"{nummer}.",
+                classes="nr",
+            ),
+
+            Input(
+                placeholder="Modulname",
+                id=f"modulname-{nummer}",
+                classes="modulname",
+            ),
+
+            Input(
+                value="5",
+                placeholder="ECTS",
+                id=f"ects-{nummer}",
+                classes="ects",
+            ),
+
+            Select(
+                [
+                    ("geplant", "geplant"),
+                    ("begonnen", "begonnen"),
+                    ("abgeschlossen", "abgeschlossen"),
+                ],
+                value="geplant",
+                id=f"status-{nummer}",
+                classes="status",
+            ),
+
+            Input(
+                value="14",
+                placeholder="Tage",
+                id=f"dauer-{nummer}",
+                classes="dauer",
+            ),
+
+            id=f"modul-zeile-{nummer}",
+            classes="modul-zeile",
+        )
+
+        # Die komplette Zeile wird eingehängt.
+        # NICHT mehr zeile.mount(...) verwenden.
+        liste.mount(zeile)
+
+        # Fokus direkt auf das neue Modulname-Feld setzen.
+        self.set_focus(
+            self.query_one(
+                f"#modulname-{nummer}",
+                Input,
+            )
+        )
+
+    def module_fertig(self) -> None:
+        """
+        Liest alle Modulzeilen aus und erzeugt daraus Fachmodell-Objekte.
+        """
+
+        module = []
+
+        for nummer in range(1, self.modul_nummer + 1):
+            modulname = self.query_one(
+                f"#modulname-{nummer}",
+                Input,
+            ).value.strip()
+
+            ects_text = self.query_one(
+                f"#ects-{nummer}",
+                Input,
+            ).value.strip()
+
+            status = self.query_one(
+                f"#status-{nummer}",
+                Select,
+            ).value
+
+            dauer_text = self.query_one(
+                f"#dauer-{nummer}",
+                Input,
+            ).value.strip()
+
+            # Leere Zeilen nicht speichern.
+            if not modulname:
+                self.notify(
+                    f"Bitte Modul {nummer} benennen.",
+                    severity="error",
+                )
+                self.set_focus(
+                    self.query_one(
+                        f"#modulname-{nummer}",
+                        Input,
+                    )
+                )
+                return
+
+            try:
+                ects = int(ects_text)
+                dauer = int(dauer_text)
+
+            except ValueError:
+                self.notify(
+                    f"ECTS und Dauer von Modul {nummer} müssen Zahlen sein.",
+                    severity="error",
+                )
+                return
+
+            if ects <= 0:
+                self.notify(
+                    f"ECTS von Modul {nummer} müssen größer als 0 sein.",
+                    severity="error",
+                )
+                return
+
+            if dauer <= 0:
+                self.notify(
+                    f"Die Dauer von Modul {nummer} muss größer als 0 sein.",
+                    severity="error",
+                )
+                return
+
+            try:
+                modul = Modul(
+                    modulname,
+                    ects,
+                    status,
+                    dauer,
+                    nummer,
+                )
+            except TypeError:
+                # Falls dein aktuelles Fachmodell eine andere
+                # Reihenfolge der Parameter verwendet, wird hier
+                # bewusst eine verständliche Fehlermeldung angezeigt.
+                self.notify(
+                    "Die Parameter des Modul-Fachmodells "
+                    "passen noch nicht zum Screen.",
+                    severity="error",
+                )
+                return
+
+            module.append(modul)
+
+        # Die fertigen Module an den aufrufenden Screen zurückgeben.
+        self.dismiss(module)
