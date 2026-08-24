@@ -2,10 +2,15 @@ from textual.app import ComposeResult
 from textual.containers import Center, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Header, Input, Label
+from uni_speedrun.database.repository import StudienplanRepository
 from uni_speedrun.fachmodell.studienplan import Studienplan
 from uni_speedrun.textui.screens.dashboard_screen import DashboardScreen
 from uni_speedrun.textui.screens.modul_erstellen_screen import (ModulErstellenScreen,)
 class StudienplanErstellenScreen(Screen):
+
+    def __init__(self, repository: StudienplanRepository | None = None) -> None:
+        super().__init__()
+        self.repository = repository
 
     def compose(self) -> ComposeResult:
         yield Header()
