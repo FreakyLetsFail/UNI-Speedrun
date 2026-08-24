@@ -38,3 +38,21 @@ deactivate
 Die virtuelle Umgebung `.venv` wird nicht in Git gespeichert. Sie wird auf
 jedem Rechner mit den oben genannten Befehlen neu erzeugt.
 
+
+
+## Phase-3-Prototyp
+
+Der aktuelle Prototyp enthält neben dem Dashboard:
+
+- Studienplan in den Einstellungen bearbeiten
+- Module hinzufügen, bearbeiten und löschen
+- abgeschlossene Module im Archiv anzeigen
+- Module über `[M]` starten bzw. abschließen
+- Fortschritt und gespeicherte Daten direkt aktualisieren
+- Dashboard-Shortcuts direkt im Screen statt im Textual-Footer
+
+Start unter macOS/Linux:
+
+```bash
+PYTHONPATH=src python -m uni_speedrun.main
+```
