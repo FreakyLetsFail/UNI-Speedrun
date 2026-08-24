@@ -1,31 +1,18 @@
-/* =========================
-   Allgemein
-   ========================= */
-
 Screen {
+    background: $background;
     padding: 0;
 }
 
-Footer {
-    height: 1;
-}
-
-
-/* =========================
-   Header
-   ========================= */
-
 #dashboard-header {
     width: 100%;
-    height: 4;
+    height: 5;
     align: center middle;
+    border-bottom: solid white;
 }
 
 .header-line {
     width: 1fr;
     height: 1;
-    content-align: center middle;
-    color: $text;
 }
 
 #dashboard-titel {
@@ -35,17 +22,10 @@ Footer {
     text-style: bold;
 }
 
-
-/* =========================
-   Ziel / Prognose / Abweichung
-   ========================= */
-
 #top-info {
     width: 100%;
     height: 7;
-    margin-top: 1;
-    border-top: dashed $text;
-    border-bottom: dashed $text;
+    border-bottom: solid white;
 }
 
 .info-block {
@@ -68,14 +48,9 @@ Footer {
     text-style: bold;
 }
 
-
-/* =========================
-   Aktuelles Modul
-   ========================= */
-
 #current-module {
     width: 100%;
-    height: 11;
+    height: 12;
     margin-top: 1;
     align: center middle;
 }
@@ -90,7 +65,7 @@ Footer {
 .current-title {
     width: 42;
     height: 3;
-    border: dashed $text;
+    border: dashed white;
     padding: 0 1;
     content-align: center middle;
     text-style: bold;
@@ -110,14 +85,9 @@ Footer {
     text-style: bold;
 }
 
-
-/* =========================
-   Fortschritt
-   ========================= */
-
 #progress-area {
     width: 100%;
-    height: 15;
+    height: 16;
     align: center middle;
 }
 
@@ -125,7 +95,7 @@ Footer {
     width: 54;
     height: 12;
     padding: 1 2;
-    border: round $text;
+    border: round white;
     align: center middle;
 }
 
@@ -161,27 +131,22 @@ Footer {
     text-style: bold;
 }
 
-
-/* =========================
-   Nächstes Modul
-   ========================= */
-
 #next-module {
     width: 100%;
     height: 10;
     align: center middle;
 }
 
-.next-divider-top,
-.next-divider-bottom {
+.next-divider-top {
     width: 62%;
     height: 1;
-    border-top: dashed $text;
+    border-top: solid white;
 }
 
 .next-divider-bottom {
-    border-top: none;
-    border-bottom: dashed $text;
+    width: 62%;
+    height: 1;
+    border-bottom: solid white;
 }
 
 #next-title {
@@ -198,16 +163,11 @@ Footer {
     text-style: bold;
 }
 
-
-/* =========================
-   Aktionen
-   ========================= */
-
 #dashboard-actions {
     width: 100%;
-    height: 4;
+    height: 5;
     margin-top: 1;
-    border-top: solid $text;
+    border-top: solid white;
     align: center middle;
 }
 
@@ -218,9 +178,89 @@ Footer {
     text-style: bold;
 }
 
-
 #kein-studienplan {
     width: 100%;
     height: 1fr;
+    content-align: center middle;
+}
+
+/* Einstellungen */
+
+#settings-screen,
+#archive-screen {
+    width: 100%;
+    height: 1fr;
+    padding: 2 4;
+}
+
+.screen-title {
+    width: 100%;
+    height: 3;
+    content-align: center middle;
+    text-style: bold;
+}
+
+.settings-section,
+.archive-section {
+    width: 100%;
+    margin: 1 0;
+    padding: 1 2;
+    border: round white;
+}
+
+.field-label {
+    height: 1;
+    text-style: bold;
+}
+
+.field-input {
+    width: 100%;
+    margin-bottom: 1;
+}
+
+.screen-actions {
+    width: 100%;
+    height: 4;
+    align: center middle;
+}
+
+.screen-actions Button {
+    width: 1fr;
+    margin: 0 1;
+}
+
+.module-row {
+    width: 100%;
+    height: 4;
+    border-bottom: solid white;
+    align: center middle;
+}
+
+.module-name {
+    width: 1fr;
+    height: 3;
+    content-align: left middle;
+}
+
+.module-meta {
+    width: 18;
+    height: 3;
+    content-align: center middle;
+}
+
+.module-status {
+    width: 18;
+    height: 3;
+    content-align: center middle;
+}
+
+.module-action {
+    width: 10;
+    height: 3;
+}
+
+.archive-empty {
+    width: 100%;
+    height: 5;
     content-align: center middle;
 }
