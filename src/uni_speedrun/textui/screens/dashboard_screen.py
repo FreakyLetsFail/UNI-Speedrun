@@ -42,7 +42,10 @@ class DashboardScreen(Screen):
         prognose = plan.prognostiziertes_studienende()
         abweichung = plan.abweichung_zum_zieldatum()
 
-        yield Static("UNI Speedrun", id="dashboard-titel")
+        with Horizontal(id="dashboard-header"):
+            yield Static("······························", classes="header-line")
+            yield Static("UNI Speedrun", id="dashboard-titel")
+            yield Static("······························", classes="header-line")
 
         with Horizontal(id="top-info"):
             with Vertical(classes="info-block"):
@@ -99,28 +102,30 @@ class DashboardScreen(Screen):
                     classes="days-left",
                 )
 
-        with Vertical(id="progress-card"):
-            yield Label(
+        with Vertical(id="progress-area"):
+            with Vertical(id="progress-card"):
+                yield Label(
                 f"{plan.erreichte_ects()} / {plan.zielects} ECTS",
                 id="ects-value",
             )
 
-            with Horizontal(id="progress-row"):
-                yield Label("0%", classes="progress-end")
-                yield ProgressBar(
-                    total=100,
-                    show_eta=False,
-                    show_percentage=False,
-                    id="progress-bar",
+                with Horizontal(id="progress-row"):
+                    yield Label("0%", classes="progress-end")
+                    yield ProgressBar(
+                        total=100,
+                        show_eta=False,
+                        show_percentage=False,
+                        id="progress-bar",
+                    )
+                    yield Label("100%", classes="progress-end")
+
+                yield Label(
+                    f"{fortschritt:g}%",
+                    id="progress-percent",
                 )
-                yield Label("100%", classes="progress-end")
 
-            yield Label(
-                f"{fortschritt:g}%",
-                id="progress-percent",
-            )
-
-        with Horizontal(id="next-module"):
+        with Vertical(id="next-module"):
+            yield Static("────────────────────────────────────────", classes="next-divider")
             yield Label("⑥", classes="marker")
             if naechstes_modul is None:
                 yield Static("Nächstes Modul: –", id="next-title")
@@ -134,12 +139,13 @@ class DashboardScreen(Screen):
                     f"{self._wochen(naechstes_modul.geplante_dauer_tage)}",
                     id="next-details",
                 )
+            yield Static("────────────────────────────────────────", classes="next-divider")
 
         with Horizontal(id="dashboard-actions"):
-            yield Label("[S] Einstellungen", classes="action")
-            yield Label("[A] Archiv", classes="action")
-            yield Label("[M] Modul abschließen", classes="action")
-            yield Label("[Q] Beenden", classes="action")
+            yield Label("[S]  Einstellungen", classes="action")
+            yield Label("[A]  Archiv", classes="action")
+            yield Label("[M]  Modul abschließen", classes="action")
+            yield Label("[Q]  Beenden", classes="action")
 
         yield Footer()
 
