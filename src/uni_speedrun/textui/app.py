@@ -4,10 +4,14 @@ from textual.app import App
 
 from uni_speedrun.database.sqlite_repository import SQLiteStudienplanRepository
 from uni_speedrun.textui.screens.dashboard_screen import DashboardScreen
-from uni_speedrun.textui.screens.studienplan_erstellen_screen import (StudienplanErstellenScreen,)
+from uni_speedrun.textui.screens.studienplan_erstellen_screen import (
+    StudienplanErstellenScreen,
+)
+
 
 class UniSpeedrunApp(App):
     CSS_PATH = "styles/app.tcss"
+
     def __init__(self):
         super().__init__()
 
@@ -22,10 +26,8 @@ class UniSpeedrunApp(App):
         studienplan = self.repository.laden()
 
         if studienplan is None:
-            self.push_screen(
-                StudienplanErstellenScreen()
-            )
+            self.push_screen(StudienplanErstellenScreen(self.repository))
         else:
             self.push_screen(
-                DashboardScreen(studienplan)
+                DashboardScreen(studienplan, self.repository)
             )
