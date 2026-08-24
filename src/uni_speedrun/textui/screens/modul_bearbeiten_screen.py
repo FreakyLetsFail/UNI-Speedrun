@@ -92,4 +92,4 @@ class ModulBearbeitenScreen(Screen):
             self.notify(str(error), severity="error")
             return
 
-        self.app.pop_screen(result=self.modul)
+        self.dismiss(self.modul)
