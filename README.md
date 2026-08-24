@@ -47,12 +47,18 @@ Der aktuelle Prototyp enthält neben dem Dashboard:
 - Studienplan in den Einstellungen bearbeiten
 - Module hinzufügen, bearbeiten und löschen
 - abgeschlossene Module im Archiv anzeigen
-- Module über `[M]` starten bzw. abschließen
+- Module über `[M]` starten bzw. abschließen (überführt aktives Modul in *Warte auf Ergebnis*)
+- Statusübergang zu *Abgeschlossen* inkl. Note in den Einstellungen
 - Fortschritt und gespeicherte Daten direkt aktualisieren
 - Dashboard-Shortcuts direkt im Screen statt im Textual-Footer
 
 Start unter macOS/Linux:
 
 ```bash
+# Entweder direkt mit python3:
+PYTHONPATH=src python3 -m uni_speedrun.main
+
+# Oder mit aktivierter virtueller Umgebung:
+source .venv/bin/activate
 PYTHONPATH=src python -m uni_speedrun.main
 ```
