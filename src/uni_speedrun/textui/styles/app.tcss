@@ -1,125 +1,187 @@
 /* =========================
-   Allgemeines
+   Allgemein
    ========================= */
 
 Screen {
-    padding: 0;
+    padding: 0 2;
+}
+
+Footer {
+    height: 1;
 }
 
 
 /* =========================
-   Modul-Erstellung
+   Dashboard
    ========================= */
 
-#titel {
-    height: 1;
-    margin: 0;
-    padding: 0;
-}
-
-.modul-kopf {
-    height: 1;
+#dashboard-titel {
     width: 100%;
-    padding: 0;
-    margin: 0;
+    height: 3;
+    content-align: center middle;
+    text-style: bold;
+    border-bottom: heavy $text;
 }
 
-.kopf {
+#top-info {
+    width: 100%;
+    height: 7;
+    margin-top: 1;
+}
+
+.info-block {
+    width: 1fr;
+    height: 6;
+    align: center middle;
+}
+
+.marker {
+    width: 100%;
+    height: 1;
+    content-align: center middle;
+    text-style: bold;
+}
+
+.info-value {
+    width: 100%;
+    height: 2;
+    content-align: center middle;
     text-style: bold;
 }
 
 
 /* =========================
-   Modul-Liste
+   Aktuelles Modul
    ========================= */
 
-#modul-liste {
-    height: 1fr;
+#current-module {
     width: 100%;
-    padding: 0;
-    margin: 0;
+    height: 8;
+    align: center middle;
+    margin-top: 1;
 }
 
+.current-title {
+    width: auto;
+    height: 2;
+    border: round $text;
+    padding: 0 2;
+    content-align: center middle;
+    text-style: bold;
+}
 
-/* =========================
-   Einzelne Modulzeile
-   ========================= */
-
-.modul-zeile {
-    height: 3;
+.current-subtitle {
     width: 100%;
-    padding: 0;
-    margin: 0;
-    layout: horizontal;
-}
-
-
-/* =========================
-   Spalten
-   ========================= */
-
-.nr {
-    width: 5;
-    min-width: 5;
-    padding: 1 0;
-}
-
-.modulname {
-    width: 1fr;
-}
-
-.ects {
-    width: 12;
-    min-width: 8;
-}
-
-.status {
-    width: 16;
-    min-width: 16;
-}
-
-.dauer {
-    width: 12;
-    min-width: 12;
-}
-
-
-/* =========================
-   Eingabefelder
-   ========================= */
-
-.modul-zeile Input {
-    height: 3;
-    margin: 0;
-}
-
-.modul-zeile Select {
-    height: 3;
-    margin: 0;
-}
-
-
-/* =========================
-   Buttons
-   ========================= */
-
-#aktionen {
-    height: 3;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
-
-#aktionen Button {
-    height: 3;
-    margin: 0 1 0 0;
-}
-
-
-/* =========================
-   Footer
-   ========================= */
-
-Footer {
     height: 1;
+    content-align: center middle;
+    text-style: bold;
+}
+
+.days-left {
+    width: 100%;
+    height: 1;
+    content-align: center middle;
+    text-style: bold;
+}
+
+
+/* =========================
+   Fortschritt
+   ========================= */
+
+#progress-card {
+    width: 32;
+    height: 11;
+    margin: 1 auto;
+    padding: 1 2;
+    border: round $text;
+    align: center middle;
+}
+
+#ects-value {
+    width: 100%;
+    height: 2;
+    content-align: center middle;
+    text-style: bold;
+}
+
+#progress-row {
+    width: 100%;
+    height: 3;
+    align: center middle;
+}
+
+.progress-end {
+    width: 4;
+    height: 1;
+    content-align: center middle;
+}
+
+#progress-bar {
+    width: 1fr;
+    height: 1;
+    margin: 0 1;
+}
+
+#progress-percent {
+    width: 100%;
+    height: 1;
+    content-align: center middle;
+    text-style: bold;
+}
+
+
+/* =========================
+   Nächstes Modul
+   ========================= */
+
+#next-module {
+    width: 100%;
+    height: 6;
+    margin-top: 1;
+    align: center middle;
+}
+
+#next-module .marker {
+    width: 4;
+}
+
+#next-title {
+    width: auto;
+    height: 2;
+    content-align: left middle;
+    text-style: bold;
+}
+
+#next-details {
+    width: auto;
+    height: 2;
+    margin-left: 2;
+    content-align: left middle;
+    text-style: bold;
+}
+
+
+/* =========================
+   Aktionen
+   ========================= */
+
+#dashboard-actions {
+    width: 100%;
+    height: 3;
+    margin-top: 1;
+    align: center middle;
+}
+
+.action {
+    width: 1fr;
+    height: 2;
+    content-align: center middle;
+    text-style: bold;
+}
+
+#kein-studienplan {
+    width: 100%;
+    height: 1fr;
+    content-align: center middle;
 }
