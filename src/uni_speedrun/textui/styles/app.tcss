@@ -184,4 +184,199 @@ Footer {
     width: 100%;
     height: 1fr;
     content-align: center middle;
+}/* =========================
+   Dashboard
+   ========================= */
+
+#dashboard-header {
+    width: 100%;
+    height: 4;
+    align: center middle;
+    border-bottom: solid white;
+}
+
+#dashboard-titel {
+    width: 24;
+    height: 3;
+    content-align: center middle;
+    text-style: bold;
+}
+
+.header-line {
+    width: 1fr;
+    height: 1;
+    content-align: center middle;
+}
+
+/* =========================
+   Top-Information
+   ========================= */
+
+#top-info {
+    width: 100%;
+    height: 7;
+    margin-top: 1;
+}
+
+.info-block {
+    width: 1fr;
+    height: 6;
+    align: center middle;
+}
+
+.marker {
+    width: 100%;
+    height: 1;
+    content-align: center middle;
+    text-style: bold;
+}
+
+.info-value {
+    width: 100%;
+    height: 2;
+    content-align: center middle;
+    text-style: bold;
+}
+
+/* =========================
+   Aktuelles Modul
+   ========================= */
+
+#current-module {
+    width: 100%;
+    height: 9;
+    align: center middle;
+    margin-top: 1;
+}
+
+.current-title {
+    width: 38;
+    height: 3;
+    border: dashed white;
+    padding: 0 2;
+    content-align: center middle;
+    text-style: bold;
+}
+
+.current-subtitle {
+    width: 100%;
+    height: 2;
+    content-align: center middle;
+    text-style: bold;
+}
+
+.days-left {
+    width: 100%;
+    height: 1;
+    content-align: center middle;
+    text-style: bold;
+}
+
+/* =========================
+   Fortschritt
+   ========================= */
+
+#progress-area {
+    width: 100%;
+    height: 15;
+    align: center middle;
+}
+
+#progress-card {
+    width: 58;
+    height: 12;
+    padding: 1 2;
+    border: round white;
+    align: center middle;
+}
+
+#ects-value {
+    width: 100%;
+    height: 2;
+    content-align: center middle;
+    text-style: bold;
+}
+
+#progress-row {
+    width: 100%;
+    height: 3;
+    align: center middle;
+}
+
+.progress-end {
+    width: 5;
+    height: 1;
+    content-align: center middle;
+}
+
+#progress-bar {
+    width: 1fr;
+    height: 1;
+    margin: 0 1;
+}
+
+#progress-percent {
+    width: 100%;
+    height: 1;
+    content-align: center middle;
+    text-style: bold;
+}
+
+/* =========================
+   Nächstes Modul
+   ========================= */
+
+#next-module {
+    width: 100%;
+    height: 9;
+    align: center middle;
+}
+
+.next-divider {
+    width: 60%;
+    height: 1;
+    content-align: center middle;
+}
+
+#next-module .marker {
+    width: 100%;
+}
+
+#next-title {
+    width: 100%;
+    height: 2;
+    content-align: center middle;
+    text-style: bold;
+}
+
+#next-details {
+    width: 100%;
+    height: 2;
+    content-align: center middle;
+    text-style: bold;
+}
+
+/* =========================
+   Aktionen
+   ========================= */
+
+#dashboard-actions {
+    width: 100%;
+    height: 4;
+    margin-top: 1;
+    align: center middle;
+    border-top: solid white;
+}
+
+.action {
+    width: 1fr;
+    height: 3;
+    content-align: center middle;
+    text-style: bold;
+}
+
+#kein-studienplan {
+    width: 100%;
+    height: 1fr;
+    content-align: center middle;
 }
