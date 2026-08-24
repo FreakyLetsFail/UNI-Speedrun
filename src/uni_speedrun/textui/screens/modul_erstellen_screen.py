@@ -129,7 +129,7 @@ class ModulErstellenScreen(Screen):
             Select(
                 [
                     ("geplant", "geplant"),
-                    ("begonnen", "begonnen"),
+                    ("aktiv", "aktiv"),
                     ("warte auf Ergebnis", "warte_auf_ergebnis"),
                     ("abgeschlossen", "abgeschlossen"),
                 ],
@@ -258,5 +258,5 @@ class ModulErstellenScreen(Screen):
         self.app.pop_screen()
 
         self.app.push_screen(
-            DashboardScreen(self.studienplan)
+            DashboardScreen(self.studienplan, self.app.repository)
             )
