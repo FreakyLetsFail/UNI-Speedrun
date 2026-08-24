@@ -198,7 +198,7 @@ class DashboardScreen(Screen):
             self._speichern()
             self.notify(f"{aktives.name} wurde abgeschlossen.")
 
-        self.refresh()
+        self.refresh(recompose=True)
 
     def action_beenden(self) -> None:
         self.app.exit()
