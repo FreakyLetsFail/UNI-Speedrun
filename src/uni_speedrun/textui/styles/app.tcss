@@ -94,7 +94,7 @@ Footer {
     height: 11;
     margin: 1 0;
     padding: 1 2;
-    border: round $text;
+    border: round white;
     align: center middle;
 }
 
