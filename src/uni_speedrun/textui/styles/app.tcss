@@ -20,7 +20,7 @@ Footer {
     height: 3;
     content-align: center middle;
     text-style: bold;
-    border-bottom: heavy $text;
+    border-bottom: heavy white;
 }
 
 #top-info {
@@ -64,7 +64,7 @@ Footer {
 .current-title {
     width: auto;
     height: 2;
-    border: round $text;
+    border: round white;
     padding: 0 2;
     content-align: center middle;
     text-style: bold;
@@ -92,7 +92,7 @@ Footer {
 #progress-card {
     width: 32;
     height: 11;
-    margin: 1 auto;
+    margin: 1 0;
     padding: 1 2;
     border: round $text;
     align: center middle;
