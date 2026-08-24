@@ -3,14 +3,14 @@ from datetime import date
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
-from textual.widgets import Footer, Label, ProgressBar, Static
+from textual.widgets import Label, ProgressBar, Static
 
-from uni_speedrun.fachmodell.modul import Modul
+from uni_speedrun.database.repository import StudienplanRepository
 from uni_speedrun.fachmodell.studienplan import Studienplan
 
 
 class DashboardScreen(Screen):
-    """Dashboard des aktuellen Studienplans."""
+    """Hauptdashboard des aktuellen Studienplans."""
 
     BINDINGS = [
         ("s", "einstellungen", "Einstellungen"),
@@ -19,9 +19,14 @@ class DashboardScreen(Screen):
         ("q", "beenden", "Beenden"),
     ]
 
-    def __init__(self, studienplan: Studienplan | None = None) -> None:
+    def __init__(
+        self,
+        studienplan: Studienplan | None = None,
+        repository: StudienplanRepository | None = None,
+    ) -> None:
         super().__init__()
         self.studienplan = studienplan
+        self.repository = repository
 
     def compose(self) -> ComposeResult:
         if self.studienplan is None:
@@ -29,54 +34,49 @@ class DashboardScreen(Screen):
                 "Noch kein Studienplan vorhanden.",
                 id="kein-studienplan",
             )
-            yield Footer()
             return
 
         plan = self.studienplan
         heute = date.today()
-
         aktives_modul = plan.zeige_aktives_modul()
-        naechstes_modul = plan.naechstes_modul()
-
+        naechstes_modul = self._naechstes_modul_sicher()
         fortschritt = min(max(plan.fortschritt_prozent(), 0), 100)
         prognose = plan.prognostiziertes_studienende()
         abweichung = plan.abweichung_zum_zieldatum()
 
         with Horizontal(id="dashboard-header"):
-            yield Static("········································", classes="header-line")
+            yield Static("", classes="header-line")
             yield Static("UNI Speedrun", id="dashboard-titel")
-            yield Static("········································", classes="header-line")
+            yield Static("", classes="header-line")
 
         with Horizontal(id="top-info"):
             with Vertical(classes="info-block"):
-                yield Label("①", classes="marker")
+                yield Label("○", classes="marker")
                 yield Label(
                     f"Ziel: {plan.zieldatum():%d.%m.%Y}",
                     classes="info-value",
                 )
 
             with Vertical(classes="info-block"):
-                yield Label("②", classes="marker")
-                if prognose is None:
-                    yield Label(
-                        "Prognose: –",
-                        classes="info-value",
-                    )
-                else:
-                    yield Label(
-                        f"Prognose: {prognose:%d.%m.%Y}",
-                        classes="info-value",
-                    )
+                yield Label("○", classes="marker")
+                yield Label(
+                    (
+                        "Prognose: –"
+                        if prognose is None
+                        else f"Prognose: {prognose:%d.%m.%Y}"
+                    ),
+                    classes="info-value",
+                )
 
             with Vertical(classes="info-block"):
-                yield Label("③", classes="marker")
+                yield Label("○", classes="marker")
                 yield Label(
                     f"Abweichung: {self._format_abweichung(abweichung)}",
                     classes="info-value",
                 )
 
         with Vertical(id="current-module"):
-            yield Label("④", classes="section-marker")
+            yield Label("○", classes="section-marker")
 
             if aktives_modul is None:
                 yield Static(
@@ -126,7 +126,7 @@ class DashboardScreen(Screen):
 
         with Vertical(id="next-module"):
             yield Static("", classes="next-divider-top")
-            yield Label("⑥", classes="section-marker")
+            yield Label("○", classes="section-marker")
             if naechstes_modul is None:
                 yield Static("Nächstes Modul: –", id="next-title")
             else:
@@ -142,30 +142,70 @@ class DashboardScreen(Screen):
             yield Static("", classes="next-divider-bottom")
 
         with Horizontal(id="dashboard-actions"):
-            yield Label("[S]  Einstellungen", classes="action")
-            yield Label("[A]  Archiv", classes="action")
-            yield Label("[M]  Modul abschließen", classes="action")
-            yield Label("[Q]  Beenden", classes="action")
-
-        yield Footer()
+            yield Label("[S] Einstellungen", classes="action")
+            yield Label("[A] Archiv", classes="action")
+            yield Label("[M] Modul abschließen", classes="action")
+            yield Label("[Q] Beenden", classes="action")
 
     def on_mount(self) -> None:
-        if self.studienplan is not None:
-            self.query_one("#progress-bar", ProgressBar).update(
-                progress=min(max(self.studienplan.fortschritt_prozent(), 0), 100)
-            )
+        self._update_progress()
+
+    def _update_progress(self) -> None:
+        if self.studienplan is None:
+            return
+
+        self.query_one("#progress-bar", ProgressBar).update(
+            progress=min(max(self.studienplan.fortschritt_prozent(), 0), 100)
+        )
+
+    def _naechstes_modul_sicher(self):
+        try:
+            return self.studienplan.naechstes_modul()
+        except ValueError:
+            return None
 
     def action_einstellungen(self) -> None:
-        self.notify("Einstellungen kommen in einer späteren Phase.")
+        from uni_speedrun.textui.screens.einstellungen_screen import (
+            EinstellungenScreen,
+        )
+
+        self.app.push_screen(
+            EinstellungenScreen(self.studienplan, self.repository)
+        )
 
     def action_archiv(self) -> None:
-        self.notify("Das Archiv kommt in einer späteren Phase.")
+        from uni_speedrun.textui.screens.archiv_screen import ArchivScreen
+
+        self.app.push_screen(ArchivScreen(self.studienplan))
 
     def action_modul_abschliessen(self) -> None:
-        self.notify("Modul-Abschluss kommt in einer späteren Phase.")
+        if self.studienplan is None:
+            return
+
+        aktives = self.studienplan.zeige_aktives_modul()
+
+        if aktives is None:
+            naechstes = self._naechstes_modul_sicher()
+            if naechstes is None:
+                self.notify("Alle Module sind bereits abgeschlossen.")
+                return
+
+            self.studienplan.aktiviere_modul(naechstes)
+            self._speichern()
+            self.notify(f"{naechstes.name} wurde gestartet.")
+        else:
+            self.studienplan.schliesse_modul_ab(aktives)
+            self._speichern()
+            self.notify(f"{aktives.name} wurde abgeschlossen.")
+
+        self.refresh()
 
     def action_beenden(self) -> None:
         self.app.exit()
+
+    def _speichern(self) -> None:
+        if self.repository is not None and self.studienplan is not None:
+            self.repository.speichern(self.studienplan)
 
     @staticmethod
     def _wochen(tage: int) -> str:
@@ -185,7 +225,6 @@ class DashboardScreen(Screen):
 
         sign = "+" if tage > 0 else "-"
         tage = abs(tage)
-
         monate = tage // 30
         resttage = tage % 30
 
