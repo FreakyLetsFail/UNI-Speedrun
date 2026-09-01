@@ -7,8 +7,6 @@ from .modulstatus import Modulstatus
 
 
 class Studienplan:
-    """Verwaltet die Modulkomposition eines Studienplans mit validierenden Properties."""
-
     def __init__(
         self,
         module: list[Modul],

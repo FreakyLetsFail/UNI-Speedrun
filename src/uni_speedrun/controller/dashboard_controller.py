@@ -7,8 +7,6 @@ from uni_speedrun.fachmodell.studienplan import Studienplan
 
 
 class DashboardController:
-    """Koordiniert die Anwendungslogik, Benutzeraktionen und die Persistenz."""
-
     def __init__(self, repository: StudienplanRepository) -> None:
         self.repository = repository
         self.studienplan: Studienplan | None = self.repository.laden()
@@ -22,7 +20,6 @@ class DashboardController:
             self.repository.speichern(self.studienplan)
 
     def modul_abschliessen_oder_starten(self) -> tuple[bool, str]:
-        """Verarbeitet die Schnell-Aktion [M] auf dem Dashboard."""
         if self.studienplan is None:
             return False, "Kein Studienplan vorhanden."
 

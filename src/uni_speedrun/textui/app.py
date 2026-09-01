@@ -11,8 +11,6 @@ from uni_speedrun.textui.screens.studienplan_erstellen_screen import (
 
 
 class UniSpeedrunApp(App):
-    """Hauptanwendung von Uni Speedrun (Composition Root für Dependency Injection)."""
-
     CSS_PATH = "styles/app.tcss"
 
     def __init__(self):

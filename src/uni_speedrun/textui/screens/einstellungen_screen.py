@@ -17,8 +17,6 @@ from uni_speedrun.textui.screens.modul_bearbeiten_screen import (
 
 
 class EinstellungenScreen(Screen):
-    """Bearbeitet Studienplan und Modul-Liste."""
-
     BINDINGS = [
         ("escape", "zurueck", "Zurück"),
     ]

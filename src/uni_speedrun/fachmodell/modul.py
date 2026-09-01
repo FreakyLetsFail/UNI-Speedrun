@@ -5,8 +5,6 @@ from .pruefungsleistung import Pruefungsleistung
 
 
 class Modul:
-    """Repräsentiert ein einzelnes Studienmodul mit validierenden Properties."""
-
     def __init__(
         self,
         name: str,

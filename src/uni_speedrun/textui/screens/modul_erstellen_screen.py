@@ -7,13 +7,6 @@ from uni_speedrun.fachmodell.modulstatus import Modulstatus
 from uni_speedrun.textui.screens.dashboard_screen import DashboardScreen
 
 class ModulErstellenScreen(Screen):
-    """
-    Screen zum Erstellen mehrerer Module.
-
-    Module werden zunächst in der Oberfläche gesammelt.
-    Erst bei "Fertig" werden sie als Fachmodell-Objekte erzeugt.
-    """
-
     BINDINGS = [
         ("f2", "neues_modul", "Neues Modul"),
         ("f10", "fertig", "Fertig"),
@@ -67,9 +60,6 @@ class ModulErstellenScreen(Screen):
         yield Footer()
 
     def on_mount(self) -> None:
-        """
-        Beim Öffnen direkt das erste Modul anlegen.
-        """
         self.neues_modul()
 
     def action_neues_modul(self) -> None:
@@ -149,10 +139,6 @@ class ModulErstellenScreen(Screen):
         )
 
     def module_fertig(self) -> None:
-        """
-        Liest alle Modulzeilen aus und erzeugt daraus Fachmodell-Objekte.
-        """
-
         module = []
 
         for nummer in range(1, self.modul_nummer + 1):

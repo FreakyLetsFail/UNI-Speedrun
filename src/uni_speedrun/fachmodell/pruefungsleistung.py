@@ -2,8 +2,6 @@ from datetime import date
 
 
 class Pruefungsleistung:
-    """Repräsentiert die Prüfungsleistung eines Moduls (z. B. Klausur, Projekt, Portfolio)."""
-
     def __init__(
         self,
         titel: str,

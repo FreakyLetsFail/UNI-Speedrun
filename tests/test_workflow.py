@@ -8,7 +8,6 @@ from uni_speedrun.fachmodell.studienplan import Studienplan
 
 
 def test_kompletter_modul_lebenszyklus(tmp_path):
-    """Testet den gesamten Ablauf: Starten -> Warte auf Ergebnis -> Abschließen."""
     datenbank = tmp_path / "test_lifecycle.db"
     repo = SQLiteStudienplanRepository(str(datenbank))
 

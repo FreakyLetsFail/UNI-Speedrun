@@ -1,5 +1,3 @@
-"""Einrichtungstests für die Entwicklungsumgebung."""
-
 import sqlite3
 
 import textual

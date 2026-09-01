@@ -8,8 +8,6 @@ from uni_speedrun.fachmodell.studienplan import Studienplan
 
 
 class ArchivScreen(Screen):
-    """Zeigt alle bereits abgeschlossenen Module."""
-
     BINDINGS = [
         ("escape", "zurueck", "Zurück"),
     ]

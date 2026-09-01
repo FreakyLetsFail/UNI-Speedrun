@@ -10,8 +10,6 @@ from uni_speedrun.fachmodell.modulstatus import Modulstatus
 
 
 class ModulBearbeitenScreen(Screen):
-    """Kleiner Editor für ein einzelnes Modul."""
-
     BINDINGS = [
         ("escape", "abbrechen", "Abbrechen"),
     ]

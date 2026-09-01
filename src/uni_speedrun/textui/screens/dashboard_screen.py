@@ -14,8 +14,6 @@ from uni_speedrun.fachmodell.studienplan import Studienplan
 
 
 class DashboardScreen(Screen):
-    """Hauptdashboard des aktuellen Studienplans (Reine Präsentationsschicht)."""
-
     BINDINGS = [
         ("s", "einstellungen", "Einstellungen"),
         ("a", "archiv", "Archiv"),
