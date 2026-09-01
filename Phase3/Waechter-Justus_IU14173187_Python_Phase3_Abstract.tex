@@ -1,57 +1,94 @@
 \documentclass[11pt,a4paper]{article}
 
+% ==================================================
+% Pakete
+% ==================================================
+
 \usepackage{fontspec}
 \setmainfont{Arial}
 
-\usepackage{geometry}
-\geometry{a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm}
-
 \usepackage[ngerman]{babel}
+
+\usepackage[
+    top=2cm,
+    bottom=2cm,
+    left=2cm,
+    right=2cm
+]{geometry}
+
 \usepackage{setspace}
 \onehalfspacing
 
+\usepackage{microtype}
+\usepackage{hyperref}
 \usepackage{titlesec}
-\titleformat{\section}{\fontsize{12}{14.4}\selectfont\bfseries}{\thesection}{1em}{}
-\titlespacing*{\section}{0pt}{6pt}{6pt}
+
+% ==================================================
+% Formatierung
+% ==================================================
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 
-\usepackage[hidelinks]{hyperref}
+\titleformat{\section}{\fontsize{12}{14.4}\selectfont\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+% ==================================================
+% Angaben
+% ==================================================
+
+\newcommand{\projektname}{Uni Speedrun}
+\newcommand{\matrikelnummer}{IU14173187}
+\newcommand{\kurs}{Python}
+
+% ==================================================
+% Dokument
+% ==================================================
 
 \begin{document}
-\raggedbottom
 
 \begin{center}
-{\Large\bfseries Abstract und Abschlussbericht: Uni Speedrun}\\[4pt]
-{\large Objektorientierte und funktionale Programmierung mit Python}
-\end{center}
-\vspace{2pt}
-\noindent Justus Wächter \hfill Matrikelnummer: IU14173187\\
-Portfoliophase 3 \hfill Kurs: Python
-\vspace{2pt}
-\hrule
-\vspace{6pt}
+    {\Large\textbf{Abstract und Abschlussbericht: \projektname}}\\[3pt]
+    {\large Objektorientierte und funktionale Programmierung mit Python}\\[6pt]
 
-\section*{Ausgangslage und Zielsetzung}
+    Justus Wächter \hfill Matrikelnummer: \matrikelnummer\\
+    Portfoliophase 3 \hfill Kurs: \kurs
+\end{center}
+
+\hrule
+\vspace{0.4cm}
+
+% ==================================================
+\section{Ausgangslage und Zielsetzung}
 Das Projekt Uni Speedrun unterstützt Studierende bei der Planung ihres Studienverlaufs. Im Mittelpunkt stehen ein individuell gesetztes Zieldatum, der erreichte ECTS-Fortschritt und eine Prognose des Studienendes. Das lokale Terminal-User-Interface verbindet diese Kennzahlen mit einer nachvollziehbaren Modulverwaltung.
 
 Ziel der finalen Phase war die Umsetzung des in den vorherigen Phasen entwickelten Konzepts. Der Prototyp verwaltet Module, bildet deren Lebenszyklus ab, berechnet Zeitpläne und speichert die Daten lokal in SQLite.
 
-\section*{Methodik und technische Umsetzung}
+% ==================================================
+\section{Methodik und technische Umsetzung}
 Die Implementierung erfolgte in Python 3.10 oder neuer. Das Fachmodell besteht aus \textit{Studienplan}, \textit{Modul}, \textit{Prüfungsleistung} und der Enumeration \textit{Modulstatus}. Properties validieren zentrale Fachwerte. Das Repository-Pattern trennt die SQLite-Datenhaltung vom Fachmodell. Der \textit{DashboardController} vermittelt zwischen Textual-Oberfläche, Fachmodell und Repository.
 
 Das Dashboard zeigt Zieltermin, Prognose, Abweichung, ECTS-Fortschritt und das nächste beziehungsweise aktive Modul. Ein aktives Modul kann nach der Prüfungsabgabe auf \texttt{WARTE\_\allowbreak AUF\_\allowbreak ERGEBNIS} gesetzt werden. Dadurch kann bereits das nächste Modul begonnen werden. Nach Eintragung der Note wird das Modul abgeschlossen und im Archiv angezeigt.
 
-\section*{Ergebnisse und Qualitätssicherung}
+% ==================================================
+\section{Ergebnisse und Qualitätssicherung}
 Die zentralen Anwendungsfälle sind implementiert: Studienplan anlegen und bearbeiten, Module hinzufügen, ändern, löschen und sortieren, Module starten und zur Bewertung einreichen, Ergebnisse eintragen, Fortschritt berechnen und Daten dauerhaft speichern. Die Tests decken Fachmodell, Zustandslogik, Controller und SQLite-Repository ab. Der aktuelle Stand umfasst 56 automatisierte Tests, die vollständig erfolgreich ausgeführt wurden.
 
-\section*{Kritische Reflexion}
+% ==================================================
+\section{Kritische Reflexion}
 Durch die Trennung der Verantwortlichkeiten wurde der Code leichter zu testen und zu verstehen. Besonders geholfen hat die Repository-Abstraktion, weil Datenbankdetails nicht über die Screens verteilt sind. Ein echtes Problem gab es bei den Tastatur-Shortcuts in Textual: [S] und [M] wurden zunächst als Rich-Markup statt als Tasten interpretiert, das ließ sich erst durch Deaktivieren des Markups lösen. Bewusst nicht umgesetzt sind Semesterstrukturen, mehrere Studiengänge und eine Cloud-Synchronisation, weil der Prototyp auf einen einzelnen lokalen Nutzer ausgelegt ist.
 
 Die Arbeit hat außerdem gezeigt, dass Python Zugriffsschutz eher über Konventionen als über echte private Attribute regelt. Fachliche Regeln müssen deshalb nicht nur beim Erzeugen, sondern auch bei späteren Änderungen geprüft werden - das übernehmen im Studienplan die Zustandsmethoden.
 
-\section*{Fazit und Weiterverwendung}
+% ==================================================
+\section{Fazit und Weiterverwendung}
 Uni Speedrun erfüllt die geplante Funktion eines übersichtlichen Studien-Dashboards als prototypische Python-Anwendung. Die Architektur kann später um weitere Repository-Implementierungen, Semester oder zusätzliche Auswertungen erweitert werden. Die wichtigsten Ergebnisse sind reproduzierbar testbar und mit wenigen Installationsschritten ausführbar.
 
 \end{document}
