@@ -59,11 +59,11 @@ class ModulErstellenScreen(Screen):
 
         yield Footer()
 
-    def on_mount(self) -> None:
-        self.neues_modul()
+    async def on_mount(self) -> None:
+        await self.neues_modul()
 
-    def action_neues_modul(self) -> None:
-        self.neues_modul()
+    async def action_neues_modul(self) -> None:
+        await self.neues_modul()
 
     def action_fertig(self) -> None:
         self.module_fertig()
@@ -71,9 +71,9 @@ class ModulErstellenScreen(Screen):
     def action_zurueck(self) -> None:
         self.app.pop_screen()
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
+    async def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "neues-modul":
-            self.neues_modul()
+            await self.neues_modul()
 
         elif event.button.id == "fertig":
             self.module_fertig()
@@ -81,7 +81,7 @@ class ModulErstellenScreen(Screen):
         elif event.button.id == "zurueck":
             self.app.pop_screen()
 
-    def neues_modul(self) -> None:
+    async def neues_modul(self) -> None:
         self.modul_nummer += 1
         nummer = self.modul_nummer
 
@@ -129,7 +129,7 @@ class ModulErstellenScreen(Screen):
             classes="modul-zeile",
         )
 
-        liste.mount(zeile)
+        await liste.mount(zeile)
 
         self.set_focus(
             self.query_one(
