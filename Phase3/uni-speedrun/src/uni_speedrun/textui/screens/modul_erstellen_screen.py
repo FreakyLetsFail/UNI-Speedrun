@@ -23,7 +23,6 @@ class ModulErstellenScreen(Screen):
     def __init__(self, studienplan, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Enthält die Nummern der aktuell angelegten Module.
         self.studienplan = studienplan
         self.modul_nummer = 0
 
@@ -35,7 +34,6 @@ class ModulErstellenScreen(Screen):
             id="titel",
         )
 
-        # Tabellenkopf
         yield Horizontal(
             Label("Nr.", classes="kopf nr"),
             Label("Modulname", classes="kopf modulname"),
@@ -94,14 +92,6 @@ class ModulErstellenScreen(Screen):
             self.app.pop_screen()
 
     def neues_modul(self) -> None:
-        """
-        Fügt eine neue Modulzeile hinzu.
-
-        Wichtig:
-        Die Widgets werden direkt beim Erzeugen der Horizontal-Zeile
-        übergeben. Dadurch entsteht kein MountError.
-        """
-
         self.modul_nummer += 1
         nummer = self.modul_nummer
 
@@ -149,11 +139,8 @@ class ModulErstellenScreen(Screen):
             classes="modul-zeile",
         )
 
-        # Die komplette Zeile wird eingehängt.
-        # NICHT mehr zeile.mount(...) verwenden.
         liste.mount(zeile)
 
-        # Fokus direkt auf das neue Modulname-Feld setzen.
         self.set_focus(
             self.query_one(
                 f"#modulname-{nummer}",
@@ -189,7 +176,6 @@ class ModulErstellenScreen(Screen):
                 Input,
             ).value.strip()
 
-            # Leere Zeilen nicht speichern.
             if not modulname:
                 self.notify(
                     f"Bitte Modul {nummer} benennen.",
@@ -248,7 +234,6 @@ class ModulErstellenScreen(Screen):
 
             module.append(modul)
 
-        # Die fertigen Module an den aufrufenden Screen zurückgeben.
         self.studienplan.module = module
 
         self.app.repository.speichern(

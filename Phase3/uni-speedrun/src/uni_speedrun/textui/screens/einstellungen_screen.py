@@ -4,7 +4,9 @@ from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.screen import Screen
 from textual.widgets import Button, Input, Label, Static
+from textual.css.query import NoMatches
 
+from uni_speedrun.controller.dashboard_controller import DashboardController
 from uni_speedrun.database.repository import StudienplanRepository
 from uni_speedrun.fachmodell.modul import Modul
 from uni_speedrun.fachmodell.modulstatus import Modulstatus
@@ -31,11 +33,16 @@ class EinstellungenScreen(Screen):
     def __init__(
         self,
         studienplan: Studienplan | None,
-        repository: StudienplanRepository | None,
+        repository: StudienplanRepository | None = None,
+        controller: DashboardController | None = None,
     ) -> None:
         super().__init__()
         self.studienplan = studienplan
         self.repository = repository
+        self.controller = controller
+        if self.controller is None and self.repository is not None:
+            self.controller = DashboardController(self.repository)
+
 
     def compose(self) -> ComposeResult:
         startdatum_str = (
@@ -233,8 +240,8 @@ class EinstellungenScreen(Screen):
         for fmt in ("%d.%m.%Y", "%d.%m.%y", "%Y-%m-%d"):
             try:
                 return datetime.strptime(text, fmt).date()
-            except ValueError:
-                pass
+        except ValueError:
+            continue
         raise ValueError("Datum bitte im Format TT.MM.JJJJ angeben (z. B. 01.11.2024).")
 
     def _plan_speichern(self, silent: bool = False) -> bool:
@@ -246,7 +253,7 @@ class EinstellungenScreen(Screen):
             zielects_text = self.query_one("#zielects", Input).value.strip()
             zieldauer_text = self.query_one("#zieldauer", Input).value.strip()
             startdatum_text = self.query_one("#startdatum", Input).value.strip()
-        except Exception:
+        except NoMatches:
             return False
 
         try:
@@ -406,5 +413,4 @@ class EinstellungenScreen(Screen):
     def action_zurueck(self) -> None:
         self._plan_speichern(silent=True)
         self.app.pop_screen()
-
 

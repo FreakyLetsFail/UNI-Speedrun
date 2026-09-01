@@ -20,6 +20,7 @@ class UniSpeedrunApp(App):
 
         projektordner = Path(__file__).resolve().parents[3]
         datenbank_pfad = projektordner / "data" / "uni_speedrun.db"
+        datenbank_pfad.parent.mkdir(parents=True, exist_ok=True)
 
         self.repository = SQLiteStudienplanRepository(str(datenbank_pfad))
         self.controller = DashboardController(self.repository)
@@ -34,3 +35,20 @@ class UniSpeedrunApp(App):
                 DashboardScreen(studienplan, self.repository, self.controller)
             )
 
+    def oeffne_datenbank(self, datenbank_pfad: str) -> None:
+        pfad = Path(datenbank_pfad).expanduser()
+        if not pfad.is_absolute():
+            pfad = Path.cwd() / pfad
+        pfad.parent.mkdir(parents=True, exist_ok=True)
+
+        self.repository = SQLiteStudienplanRepository(str(pfad))
+        self.controller = DashboardController(self.repository)
+        studienplan = self.controller.lade_studienplan()
+        self.pop_screen()
+
+        if studienplan is None:
+            self.push_screen(StudienplanErstellenScreen(self.repository))
+        else:
+            self.push_screen(
+                DashboardScreen(studienplan, self.repository, self.controller)
+            )

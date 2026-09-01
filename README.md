@@ -18,7 +18,8 @@ py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-python src/main.py
+$env:PYTHONPATH = "src"
+python -m uni_speedrun
 ```
 
 Für die Entwicklung und die Tests werden zusätzlich die Entwicklungsabhängigkeiten
@@ -55,10 +56,8 @@ Der aktuelle Prototyp enthält neben dem Dashboard:
 Start unter macOS/Linux:
 
 ```bash
-# Entweder direkt mit python3:
-PYTHONPATH=src python3 -m uni_speedrun.main
+PYTHONPATH=src python3 -m uni_speedrun
 
-# Oder mit aktivierter virtueller Umgebung:
 source .venv/bin/activate
-PYTHONPATH=src python -m uni_speedrun.main
+PYTHONPATH=src python -m uni_speedrun
 ```

@@ -5,6 +5,7 @@ from textual.app import ComposeResult
 from textual.containers import Center, Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import Label, ProgressBar, Static
+from textual.css.query import NoMatches
 
 from uni_speedrun.controller.dashboard_controller import DashboardController
 from uni_speedrun.database.repository import StudienplanRepository
@@ -206,8 +207,8 @@ class DashboardScreen(Screen):
                     100,
                 )
             )
-        except Exception:
-            pass
+        except NoMatches:
+            return
 
     def _naechstes_modul_sicher(self):
         if self.studienplan is None:
@@ -304,5 +305,4 @@ class DashboardScreen(Screen):
                 return f"-{monate} {'Monat' if monate == 1 else 'Monate'}"
             else:
                 return f"-{tage} Tage"
-
 

@@ -7,6 +7,8 @@ from .modulstatus import Modulstatus
 
 
 class Studienplan:
+    """Verwaltet die Modulkomposition eines Studienplans mit validierenden Properties."""
+
     def __init__(
         self,
         module: list[Modul],
@@ -15,18 +17,50 @@ class Studienplan:
         zieldauer: int,
         startdatum: date | None = None,
     ) -> None:
-        reihenfolge = [modul.reihenfolge for modul in module]
+        self.module = list(module) if module is not None else []
+        self._pruefe_reihenfolge()
+        self.studienziel_name = studienziel_name
+        self.zielects = zielects
+        self.zieldauer = zieldauer
+        self.startdatum = startdatum or date.today()
 
+    @property
+    def studienziel_name(self) -> str:
+        return self._studienziel_name
+
+    @studienziel_name.setter
+    def studienziel_name(self, value: str) -> None:
+        if not value or not value.strip():
+            raise ValueError("Der Name des Studienziels darf nicht leer sein.")
+        self._studienziel_name = value.strip()
+
+    @property
+    def zielects(self) -> int:
+        return self._zielects
+
+    @zielects.setter
+    def zielects(self, value: int) -> None:
+        if not isinstance(value, int) or value <= 0:
+            raise ValueError("Ziel-ECTS müssen eine Zahl größer als 0 sein.")
+        self._zielects = value
+
+    @property
+    def zieldauer(self) -> int:
+        return self._zieldauer
+
+    @zieldauer.setter
+    def zieldauer(self, value: int) -> None:
+        if not isinstance(value, int) or value <= 0:
+            raise ValueError("Zieldauer muss eine Zahl größer als 0 sein.")
+        self._zieldauer = value
+
+    def _pruefe_reihenfolge(self) -> None:
+        reihenfolge = [modul.reihenfolge for modul in self.module]
         if len(reihenfolge) != len(set(reihenfolge)):
             raise ValueError(
                 "Jedes Modul muss eine eindeutige Reihenfolge haben."
             )
 
-        self.module = module
-        self.studienziel_name = studienziel_name
-        self.zielects = zielects
-        self.zieldauer = zieldauer
-        self.startdatum = startdatum or date.today()
 
     def zieldatum(self) -> date:
         return self.startdatum + relativedelta(months=self.zieldauer)
@@ -54,20 +88,24 @@ class Studienplan:
         return None
 
     def aktiviere_modul(self, modul: Modul) -> None:
-        if self.zeige_aktives_modul() is None:
-            if modul == self.naechstes_modul():
-                modul._aktivieren()
-            else:
-                raise ValueError(
-                    f"Aktivieren nicht möglich! "
-                    f"Das nächste Modul ist {self.naechstes_modul().name}."
-                )
-        else:
-            aktives = self.zeige_aktives_modul()
+        aktives = self.zeige_aktives_modul()
+        if aktives is not None:
             raise ValueError(
                 f"Aktivieren nicht möglich! "
                 f"Das Modul {aktives.name} ist bereits aktiv."
             )
+
+        naechstes = self.naechstes_modul()
+        if naechstes is None:
+            raise ValueError("Es gibt kein geplantes Modul mehr.")
+
+        if modul != naechstes:
+            raise ValueError(
+                f"Aktivieren nicht möglich! "
+                f"Das nächste Modul ist {naechstes.name}."
+            )
+
+        modul._aktivieren()
 
     def schliesse_modul_ab(self, modul: Modul) -> None:
         if modul.status == Modulstatus.ABGESCHLOSSEN:

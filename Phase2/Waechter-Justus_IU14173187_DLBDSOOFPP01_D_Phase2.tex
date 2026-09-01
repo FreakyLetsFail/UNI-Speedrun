@@ -198,29 +198,12 @@ Das Klassendiagramm zeigt die überarbeitete Gesamtarchitektur des Prototyps. Da
 
 \begin{figure}[H]
     \centering
-    \IfFileExists{UML_PHASE2.svg}{
-        \includesvg[
-            width=0.92\textwidth,
-            height=0.30\textheight,
-            keepaspectratio,
-            inkscapearea=drawing
-        ]{UML_PHASE2}
-    }{
-        \IfFileExists{UML_PHASE2.png}{
-            \includegraphics[
-                width=0.92\textwidth,
-                height=0.30\textheight,
-                keepaspectratio
-            ]{UML_PHASE2.png}
-        }{
-            \fbox{
-                \parbox[c][5cm][c]{0.9\textwidth}{
-                    \centering
-                    VOLLSTÄNDIGES UML-KLASSENDIAGRAMM HIER EINFÜGEN (UML\_PHASE2.svg / UML\_PHASE2.png)
-                }
-            }
-        }
-    }
+    \includesvg[
+        width=0.92\textwidth,
+        height=0.30\textheight,
+        keepaspectratio,
+        inkscapearea=drawing
+    ]{UML_PHASE2}
     \caption{UML-Klassendiagramm der geplanten Gesamtarchitektur, eigene Darstellung}
     \label{fig:gesamtarchitektur}
 \end{figure}

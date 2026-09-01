@@ -5,14 +5,16 @@ from textual.app import ComposeResult
 from textual.containers import Center, Horizontal, Vertical
 from textual.screen import Screen
 from textual.widgets import Label, ProgressBar, Static
+from textual.css.query import NoMatches
 
+from uni_speedrun.controller.dashboard_controller import DashboardController
 from uni_speedrun.database.repository import StudienplanRepository
 from uni_speedrun.fachmodell.modulstatus import Modulstatus
 from uni_speedrun.fachmodell.studienplan import Studienplan
 
 
 class DashboardScreen(Screen):
-    """Hauptdashboard des aktuellen Studienplans."""
+    """Hauptdashboard des aktuellen Studienplans (Reine Präsentationsschicht)."""
 
     BINDINGS = [
         ("s", "einstellungen", "Einstellungen"),
@@ -25,10 +27,14 @@ class DashboardScreen(Screen):
         self,
         studienplan: Studienplan | None = None,
         repository: StudienplanRepository | None = None,
+        controller: DashboardController | None = None,
     ) -> None:
         super().__init__()
         self.studienplan = studienplan
         self.repository = repository
+        self.controller = controller
+        if self.controller is None and self.repository is not None:
+            self.controller = DashboardController(self.repository)
 
     def compose(self) -> ComposeResult:
         if self.studienplan is None:
@@ -201,8 +207,8 @@ class DashboardScreen(Screen):
                     100,
                 )
             )
-        except Exception:
-            pass
+        except NoMatches:
+            return
 
     def _naechstes_modul_sicher(self):
         if self.studienplan is None:
@@ -215,7 +221,7 @@ class DashboardScreen(Screen):
         )
 
         self.app.push_screen(
-            EinstellungenScreen(self.studienplan, self.repository),
+            EinstellungenScreen(self.studienplan, self.repository, self.controller),
             callback=self._on_subscreen_closed,
         )
 
@@ -228,27 +234,27 @@ class DashboardScreen(Screen):
         )
 
     def _on_subscreen_closed(self, result=None) -> None:
+        if self.controller is not None and self.controller.studienplan is not None:
+            self.studienplan = self.controller.studienplan
         self.refresh(recompose=True)
 
     def action_modul_abschliessen(self) -> None:
-        if self.studienplan is None:
-            return
-
-        aktives = self.studienplan.zeige_aktives_modul()
-
-        if aktives is None:
-            naechstes = self._naechstes_modul_sicher()
-            if naechstes is None:
-                self.notify("Alle Module sind bereits abgeschlossen.")
-                return
-
-            self.studienplan.aktiviere_modul(naechstes)
-            self._speichern()
-            self.notify(f"{naechstes.name} wurde gestartet.")
-        else:
-            self.studienplan.modul_in_bewertung_versetzen(aktives)
-            self._speichern()
-            self.notify(f"{aktives.name} wartet jetzt auf das Ergebnis.")
+        if self.controller is not None:
+            erfolg, nachricht = self.controller.modul_abschliessen_oder_starten()
+            self.studienplan = self.controller.studienplan
+            self.notify(nachricht, severity="information" if erfolg else "warning")
+        elif self.studienplan is not None:
+            aktives = self.studienplan.zeige_aktives_modul()
+            if aktives is None:
+                naechstes = self._naechstes_modul_sicher()
+                if naechstes:
+                    self.studienplan.aktiviere_modul(naechstes)
+                    self._speichern()
+                    self.notify(f"{naechstes.name} wurde gestartet.")
+            else:
+                self.studienplan.modul_in_bewertung_versetzen(aktives)
+                self._speichern()
+                self.notify(f"{aktives.name} wartet jetzt auf das Ergebnis.")
 
         self.refresh(recompose=True)
 
@@ -256,8 +262,11 @@ class DashboardScreen(Screen):
         self.app.exit()
 
     def _speichern(self) -> None:
-        if self.repository is not None and self.studienplan is not None:
+        if self.controller is not None:
+            self.controller.speichere_studienplan()
+        elif self.repository is not None and self.studienplan is not None:
             self.repository.speichern(self.studienplan)
+
 
     @staticmethod
     def _wochen(tage: int) -> str:
@@ -296,5 +305,4 @@ class DashboardScreen(Screen):
                 return f"-{monate} {'Monat' if monate == 1 else 'Monate'}"
             else:
                 return f"-{tage} Tage"
-
 

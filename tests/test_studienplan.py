@@ -1,13 +1,11 @@
 
 from datetime import date
-import pytest  # <-- WICHTIG für pytest.raises
+
+import pytest
 from uni_speedrun.fachmodell.modul import Modul, Modulstatus
 from uni_speedrun.fachmodell.studienplan import Studienplan
-from dateutil.relativedelta import relativedelta
 
 
-
-# Fixture liefert vor jedem Test frische Modul-Objekte zurück
 @pytest.fixture
 def beispiel_module():
     mathe = Modul(name="mathe", ects=5, geplante_dauer_tage=14, reihenfolge=2)
@@ -15,18 +13,15 @@ def beispiel_module():
     datenschutz = Modul(name="datenschutz", ects=5, geplante_dauer_tage=14, reihenfolge=1)
     return mathe, info, datenschutz
 
-#Überprüfung, ob ein Objekt alleine richtig übergeben werden kann.
 def test_studienplan_mit_1_objekt(beispiel_module):
     _, info, _ = beispiel_module
     test1 = Studienplan([info], "Bachelor Cyber Security", 180, 15)
     assert info in test1.module
 
-#Überprüfung, ob das gewünschte Zieldatum richtig berechnet wird
 def test_zieldatum_studienplan(beispiel_module):
     test2 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15, startdatum=date(2026, 8, 13),)
-    assert test2.zieldatum() == date(2027, 11, 13) ## Schlägt fehl - muss immer an den letzten Konsturktor aufruf angepasst werden. 
+    assert test2.zieldatum() == date(2027, 11, 13)
 
-#Überprüfung, ob mehrere Objekte richtig übergeben werden 
 def test_studienplan_mit_2_objekt(beispiel_module):
     mathe, info, datenschutz = beispiel_module
     test3 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
@@ -35,7 +30,6 @@ def test_studienplan_mit_2_objekt(beispiel_module):
     assert info in test3.module
     assert datenschutz in test3.module
 
-#Überprüfung ob die Studienziele richtig verarbeitet werden
 def test_studienziele(beispiel_module):
     test4 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
     
@@ -43,7 +37,6 @@ def test_studienziele(beispiel_module):
     assert test4.zielects == 180
     assert test4.zieldauer == 15
 
-#Überprüfung ob ECTS richtig ausgegeben werden
 def test_ects_points(beispiel_module):
     mathe, info, datenschutz = beispiel_module
     test5 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
@@ -51,7 +44,6 @@ def test_ects_points(beispiel_module):
     assert test5.erreichte_ects() == 5
 
 
-#Überprüfung ob Prozentfortschritt richtig ausgegeben wird
 def test_fortschritt_prozent(beispiel_module):
     mathe, info, datenschutz = beispiel_module
     test6 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
@@ -72,6 +64,17 @@ def test_aktiviere_falsches_modul(beispiel_module):
     test8 = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
     with pytest.raises(ValueError):
         test8.aktiviere_modul(mathe)
+
+
+def test_aktiviere_modul_ohne_geplante_module(beispiel_module):
+    mathe, info, datenschutz = beispiel_module
+    test8b = Studienplan(beispiel_module, "Bachelor Cyber Security", 180, 15)
+    for modul in (mathe, info, datenschutz):
+        modul._aktivieren()
+        modul._schliesse_ab()
+
+    with pytest.raises(ValueError, match="kein geplantes Modul"):
+        test8b.aktiviere_modul(mathe)
 
 def test_aktiviere_modul_wenn_bereits_eines_aktiv_ist(beispiel_module):
     mathe, info, datenschutz = beispiel_module
@@ -236,7 +239,6 @@ def test_aktualisiere_zeitplan_nach_nicht_bestanden(beispiel_module):
     datenschutz._aktivieren(date(2026, 9, 1))
     datenschutz._warte_auf_ergebnis(date(2026, 9, 9))
 
-    # Prüfung nicht bestanden
     test20.ergebnis_eintragen(
         datenschutz,
         bestanden=False,
@@ -245,7 +247,6 @@ def test_aktualisiere_zeitplan_nach_nicht_bestanden(beispiel_module):
 
     assert datenschutz.status == Modulstatus.GEPLANT
 
-    # Mathe wird zuerst bearbeitet
     mathe._aktivieren(date(2026, 9, 9))
     mathe._schliesse_ab(date(2026, 9, 23))
 
@@ -267,8 +268,7 @@ def test_prognostiziertes_studienende(beispiel_module):
     assert test21.prognostiziertes_studienende() == date(2026, 10, 13)
 
 
-# Überprüfung des prognostizierten Studienendes
-def test_prognostiziertes_studienende(beispiel_module):
+def test_prognostiziertes_studienende_nach_zeitplan(beispiel_module):
     mathe, info, datenschutz = beispiel_module
 
     test22 = Studienplan(
@@ -285,7 +285,6 @@ def test_prognostiziertes_studienende(beispiel_module):
     assert test22.prognostiziertes_studienende() == date(2026, 10, 13)
 
 
-# Überprüfung: Studienende wenn alle Module abgeschlossen sind
 def test_prognostiziertes_studienende_wenn_alle_module_abgeschlossen(beispiel_module):
     mathe, info, datenschutz = beispiel_module
 
@@ -308,7 +307,6 @@ def test_prognostiziertes_studienende_wenn_alle_module_abgeschlossen(beispiel_mo
     assert test23.prognostiziertes_studienende() is None
 
 
-# Überprüfung der Abweichung vom geplanten Zieldatum
 def test_abweichung_zum_zieldatum(beispiel_module):
     test24 = Studienplan(
         beispiel_module,
@@ -324,7 +322,6 @@ def test_abweichung_zum_zieldatum(beispiel_module):
     assert test24.abweichung_zum_zieldatum().days == -414
 
 
-# Überprüfung: Abweichung wenn Studienende nach Zieldatum liegt
 def test_abweichung_zum_zieldatum_nach_zieldatum(beispiel_module):
     test25 = Studienplan(
         beispiel_module,
@@ -338,66 +335,3 @@ def test_abweichung_zum_zieldatum_nach_zieldatum(beispiel_module):
     test25.aktualisiere_zeitplan()
 
     assert test25.abweichung_zum_zieldatum().days == 12
-
-
-
-
-
-
-"""
-
-
-
-
-
-
-def test_ects_points(beispiel_module):
-    mathe, info, datenschutz = beispiel_module
-    module_list = [mathe, info, datenschutz]
-
-    info.schliesse_ab()
-    Plan3 = Studienplan(module_list)
-
-    assert Plan3.berechne_ects() == 5
-
-
-def test_reihenfolge(beispiel_module):
-    mathe, info, datenschutz = beispiel_module
-    module_list = [mathe, info, datenschutz]
-
-    Plan4 = Studienplan(module_list)
-    sortierte_module = Plan4.modul_reihenfolge()
-
-    assert sortierte_module == [datenschutz, mathe, info]
-    assert sortierte_module[0] == datenschutz
-    assert sortierte_module[1] == mathe
-    assert sortierte_module[2] == info
-
-
-def test_aktives_modul(beispiel_module):
-    mathe, info, datenschutz = beispiel_module
-    Plan5 = Studienplan([mathe, info, datenschutz])
-
-    Plan5.aktiviere_modul(info)  # Über Studienplan aktivieren!
-    assert Plan5.aktives_modul() == info
-
-
-def test_aktiviere_modul_erfolgreich(beispiel_module):
-    mathe, info, datenschutz = beispiel_module
-    Plan6 = Studienplan([mathe, info, datenschutz])
-
-    Plan6.aktiviere_modul(mathe)
-    assert mathe.status == Modulstatus.AKTIV
-
-
-def test_aktiviere_zweites_modul_schleagt_fehl(beispiel_module):
-    mathe, info, datenschutz = beispiel_module
-    Plan7 = Studienplan([mathe, info, datenschutz])
-
-    Plan7.aktiviere_modul(mathe)
-
-    # Zweites Aktivieren muss den Fehler auslösen
-    with pytest.raises(ValueError):
-        Plan7.aktiviere_modul(info)
-
-"""

@@ -48,8 +48,6 @@ class SQLiteStudienplanRepository(StudienplanRepository):
 
             con.execute("PRAGMA foreign_keys = ON")
 
-            # Aktuellen Studienplan ersetzen.
-            # Dadurch existiert immer genau ein aktueller Plan.
             con.execute("DELETE FROM modul")
             con.execute("DELETE FROM studienplan")
 

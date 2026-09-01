@@ -88,20 +88,24 @@ class Studienplan:
         return None
 
     def aktiviere_modul(self, modul: Modul) -> None:
-        if self.zeige_aktives_modul() is None:
-            if modul == self.naechstes_modul():
-                modul._aktivieren()
-            else:
-                raise ValueError(
-                    f"Aktivieren nicht möglich! "
-                    f"Das nächste Modul ist {self.naechstes_modul().name}."
-                )
-        else:
-            aktives = self.zeige_aktives_modul()
+        aktives = self.zeige_aktives_modul()
+        if aktives is not None:
             raise ValueError(
                 f"Aktivieren nicht möglich! "
                 f"Das Modul {aktives.name} ist bereits aktiv."
             )
+
+        naechstes = self.naechstes_modul()
+        if naechstes is None:
+            raise ValueError("Es gibt kein geplantes Modul mehr.")
+
+        if modul != naechstes:
+            raise ValueError(
+                f"Aktivieren nicht möglich! "
+                f"Das nächste Modul ist {naechstes.name}."
+            )
+
+        modul._aktivieren()
 
     def schliesse_modul_ab(self, modul: Modul) -> None:
         if modul.status == Modulstatus.ABGESCHLOSSEN:

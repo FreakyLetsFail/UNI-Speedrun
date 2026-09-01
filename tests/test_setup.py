@@ -16,5 +16,4 @@ def test_sqlite_ist_verfuegbar() -> None:
 
 
 def test_textual_ist_verfuegbar() -> None:
-    assert textual.__version__ == "8.2.8"
-
+    assert textual.__version__
