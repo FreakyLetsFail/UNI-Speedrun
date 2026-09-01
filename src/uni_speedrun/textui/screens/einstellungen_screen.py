@@ -238,8 +238,8 @@ class EinstellungenScreen(Screen):
         for fmt in ("%d.%m.%Y", "%d.%m.%y", "%Y-%m-%d"):
             try:
                 return datetime.strptime(text, fmt).date()
-        except ValueError:
-            continue
+            except ValueError:
+                continue
         raise ValueError("Datum bitte im Format TT.MM.JJJJ angeben (z. B. 01.11.2024).")
 
     def _plan_speichern(self, silent: bool = False) -> bool:
