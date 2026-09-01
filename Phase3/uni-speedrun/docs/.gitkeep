@@ -1,0 +1,5 @@
+Test:
+pipreqs tests --savepath requirements-dev.txt --force
+
+Src:
+pipreqs src --savepath requirements.txt --force

@@ -1,0 +1,25 @@
+# Virtuelle Python-Umgebung
+.venv/
+
+# Python-Zwischendateien
+__pycache__/
+*.py[cod]
+
+# Test- und Coverage-Dateien
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Lokale Entwicklungsumgebung
+.vscode/
+.idea/
+
+# Lokale Laufzeitdaten
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+
+# Betriebssystemdateien
+.DS_Store
+Thumbs.db
+

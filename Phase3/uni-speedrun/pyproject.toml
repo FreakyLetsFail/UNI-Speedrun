@@ -1,0 +1,21 @@
+[project]
+name = "uni-speedrun"
+version = "0.1.0"
+description = "TUI-Dashboard zur Planung und Prognose eines Studienverlaufs"
+requires-python = ">=3.10"
+dependencies = [
+    "textual>=0.80.0",
+    "python-dateutil>=2.8.2",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+

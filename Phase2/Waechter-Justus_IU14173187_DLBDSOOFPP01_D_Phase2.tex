@@ -1,0 +1,304 @@
+\documentclass[11pt,a4paper]{article}
+
+% ==================================================
+% Pakete
+% ==================================================
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+
+\usepackage[
+    top=2cm,
+    bottom=2cm,
+    left=2.5cm,
+    right=2.5cm
+]{geometry}
+
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% ==================================================
+% Formatierung
+% ==================================================
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+\setlist[itemize]{
+    noitemsep,
+    topsep=2pt
+}
+
+\setlist[enumerate]{
+    noitemsep,
+    topsep=2pt
+}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+% Verhindert, dass LaTeX zu große Wortabstände erzeugt.
+\emergencystretch=1.5em
+
+% ==================================================
+% Angaben
+% ==================================================
+
+\newcommand{\projektname}{Uni Speedrun}
+\newcommand{\matrikelnummer}{IU14173187}
+\newcommand{\kurs}{DLBDSOOFPP01\_D}
+
+% ==================================================
+% Dokument
+% ==================================================
+
+\begin{document}
+
+% Keine eigene Titelseite, da das Dokument maximal
+% fünf Seiten umfassen darf.
+
+\begin{center}
+    {\Large\textbf{Reflexions- und Entwurfsdokument: \projektname}}\\[3pt]
+    {\large Objektorientierte und funktionale Programmierung mit Python}\\[6pt]
+
+    Justus Wächter \hfill Matrikelnummer: \matrikelnummer\\
+    Portfoliophase 2 \hfill Kurs: \kurs
+\end{center}
+
+\hrule
+\vspace{0.3cm}
+
+% ==================================================
+\section{Ausgangslage und Ziel der Phase 2}
+
+In der ersten Portfoliophase wurde für das Projekt „Uni Speedrun“ ein fachliches Konzept für ein lokales Dashboard zur Studienfortschrittsplanung entwickelt. Das Fachmodell bildet insbesondere einen Studienplan, die darin enthaltenen Module sowie deren Bearbeitungs- und Prüfungsstatus ab. In Phase 2 wird untersucht, wie sich dieses Fachmodell mithilfe objektorientierter Konzepte in Python technisch umsetzen lässt. Ziel ist es, die Klassenstruktur zu überprüfen, notwendige Anpassungen gegenüber Phase 1 fundiert zu begründen und daraus eine saubere Gesamtarchitektur für die spätere Implementierung abzuleiten.
+
+% ==================================================
+\section{Untersuchung objektorientierter Konzepte in Python}
+
+Auf Grundlage des in Phase 1 überarbeiteten Fachmodells wurden die zentralen objektorientierten Konzepte in Python überprüft. Im Mittelpunkt stehen die drei Entity-Klassen \textit{Studienplan}, \textit{Modul} und \textit{Prüfungsleistung} sowie die Enumeration \textit{Modulstatus}. Der \textit{Studienplan} bildet das zentrale Planungsobjekt ab, während einzelne Module mit Bearbeitungsdauer, ECTS, Reihenfolge und Status verwaltet werden. Um die Prüfungsverwaltung fachlich klar abzugrenzen, wird die Entity \textit{Prüfungsleistung} ergänzt. Die Entscheidung gegen zusätzliche Klassen wie \textit{Student} oder \textit{Studienziel} wurde beibehalten, da der Prototyp als lokales Single-User-Dashboard ausgelegt ist und Zielwerte direkt im Studienplan geführt werden können.
+
+Die Untersuchung erfolgt anhand kleiner Python-Implementierungen und Modultests. Dabei wird geprüft, ob die Klassen fachliche Invarianten dauerhaft kapseln, Modulzustände kontrolliert verwalten und die Beziehungen zwischen den Entitäten technisch und fachlich sauber abbilden. Die Ergebnisse dienen dazu, das UML-Modell für die Gesamtarchitektur gezielt zu verfeinern.
+
+% --------------------------------------------------
+\subsection{Klassen, Objekte und Kapselung}
+
+Zur Überprüfung der Klassenstruktur wurden die zentralen Fachbegriffe des Projekts als Python-Klassen umgesetzt. Die Klasse \textit{Modul} bildet ein einzelnes Studienmodul mit Name, ECTS, geplanter Bearbeitungsdauer, Reihenfolge und Status ab. Die Klasse \textit{Prüfungsleistung} verwaltet die Prüfungsdaten (Titel, Datum, Note, Bestanden-Status) und entlastet das Modul von reiner Prüfungsverwaltung. Die Klasse \textit{Studienplan} verwaltet mehrere Module und enthält Methoden zur Berechnung des Studienfortschritts, des nächsten Moduls und des prognostizierten Studienendes.
+
+Da Python keine erzwungene Zugriffsbeschränkung wie \texttt{private} besitzt, werden interne Attribute konventionsgemäß mit führendem Unterstrich (z.\,B. \texttt{\_ects}) versehen. Um zu verhindern, dass fachliche Regeln nach der Objekterzeugung durch spätere Attributänderungen umgangen werden, kommen validierende Properties (\texttt{@property} und Setter) zum Einsatz. Dadurch wird sichergestellt, dass auch nachträgliche Änderungen (z.\,B. Zuweisung unzulässiger Noten oder negativer ECTS-Werte) unmittelbar durch Exceptions abgefangen werden.
+
+\textbf{Test und Ergebnis:} Mit den Tests wurde geprüft, ob Module und Prüfungsleistungen korrekt erzeugt werden, ob Attribute über Properties geschützt sind und ob Berechnungen wie Restzeit, Enddatum und aktive Bearbeitungstage funktionieren. Zusätzlich wurde getestet, ob der \textit{Studienplan} Module verwalten, sortieren und Fortschrittswerte berechnen kann. Die Tests zeigen, dass die Klassen die fachlichen Regeln vollständig abbilden.
+
+\textbf{Folge für das UML-Modell:} Die Klassen \textit{Modul} und \textit{Studienplan} werden im UML-Modell beibehalten und um die Entity \textit{Prüfungsleistung} ergänzt. Das UML-Modell zeigt, dass alle Klassen private Attribute (\texttt{-}) besitzen und fachliche Methoden (\texttt{+}) enthalten.
+
+% --------------------------------------------------
+\subsection{Enumeration und Zustandsverwaltung}
+
+Für die Zustandsverwaltung eines Moduls wurde die Enumeration \textit{Modulstatus} umgesetzt. Sie begrenzt die möglichen Zustände eines Moduls auf \texttt{GEPLANT}, \texttt{AKTIV}, \texttt{WARTE\_AUF\_ERGEBNIS} und \texttt{ABGESCHLOSSEN}. Dadurch kann ein Modul nicht beliebige Statuswerte erhalten, sondern befindet sich immer in einem definierten fachlichen Zustand.
+
+Zustandswechsel werden im Projekt über Methoden ausgelöst. Ein Modul kann aktiviert, in die Bewertung versetzt oder abgeschlossen werden. Der Status \texttt{WARTE\_AUF\_ERGEBNIS} bildet die reale Korrekturphase nach Prüfungsabgabe ab. Dies ermöglicht, das bearbeitete Modul in Bewertung zu halten und parallel bereits das nächste Modul zu planen und zu aktivieren.
+
+\textbf{Test und Ergebnis:} Die Tests prüfen, ob neue Module standardmäßig den Status \texttt{GEPLANT} erhalten und ob Statuswechsel korrekt durchgeführt werden. Zusätzlich wird getestet, ob unzulässige Abläufe verhindert werden, zum Beispiel das Aktivieren eines falschen Moduls oder das Versetzen eines nicht aktiven Moduls in den Bewertungsstatus. Die Ergebnisse zeigen, dass die Enumeration für die geplante Zustandsverwaltung geeignet ist.
+
+\textbf{Folge für das UML-Modell:} Die Enumeration \textit{Modulstatus} wird im UML-Modell beibehalten. Sie ist notwendig, um die Zustände eines Moduls eindeutig und begrenzt darzustellen. Der Status \texttt{WARTE\_AUF\_ERGEBNIS} bleibt erhalten, da er die parallele Planung während der Korrekturzeit ermöglicht.
+
+% --------------------------------------------------
+\subsection{Komposition und Aggregation}
+
+Die Beziehung zwischen \textit{Studienplan} und \textit{Modul} sowie zwischen \textit{Modul} und \textit{Prüfungsleistung} wird fachlich als \textbf{Komposition} modelliert.
+
+Zwar stellt eine Liste in Python technisch zunächst nur Objektreferenzen bereit, fachlich besteht jedoch eine strikte Lebenszyklusabhängigkeit: Die Verlaufsdaten eines Moduls (individuelles Startdatum, geplante Tage, Noten und Reihenfolge) beziehen sich untrennbar auf den spezifischen Studienverlauf dieses einen Studienplans. Wird der Studienplan verworfen, verlieren diese Verlaufsdaten ihre Existenzberechtigung. Ebenso existiert eine \textit{Prüfungsleistung} nur im Kontext des zugehörigen Moduls.
+
+Das Attribut \texttt{reihenfolge} ist eine originäre fachliche Eigenschaft des Domain-Modells: Es definiert die sequentielle Reihenfolge der Module, die zur sukzessiven Berechnung des Zeitstrahls und des prognostizierten Studienendes im Fachmodell zwingend erforderlich ist.
+
+\textbf{Test und Ergebnis:} Die Tests prüfen, ob ein Studienplan ein oder mehrere Module aufnehmen kann, ob die Module anhand ihrer Reihenfolge sortiert werden und ob doppelte Reihenfolgen verhindert werden. Außerdem wird getestet, ob nach dem Abschluss oder der Bewertung eines Moduls das nächste Modul korrekt bestimmt wird. Die Tests zeigen, dass die Verwaltung mehrerer Module innerhalb eines Studienplans technisch funktioniert.
+
+\textbf{Folge für das UML-Modell:} Im UML-Modell wird die Beziehung zwischen \textit{Studienplan} und \textit{Modul} als Komposition ($1$ zu $1..\ast$, ausgefüllte Raute am Studienplan) und zwischen \textit{Modul} und \textit{Prüfungsleistung} ($1$ zu $0..1$, ausgefüllte Raute am Modul) dargestellt.
+
+% --------------------------------------------------
+\subsection{Vererbung und Abstraktion}
+
+Im Fachmodell wurde geprüft, ob Vererbung zwischen den bestehenden Klassen sinnvoll eingesetzt werden kann. Dabei zeigte sich, dass zwischen \textit{Studienplan}, \textit{Modul} und \textit{Prüfungsleistung} keine fachliche \glqq ist-ein\grqq-Beziehung besteht. Ein \textit{Modul} ist kein spezieller \textit{Studienplan} und eine \textit{Prüfungsleistung} ist kein spezielles \textit{Modul}. Auch die verschiedenen Modulzustände werden nicht als Unterklassen modelliert, sondern durch die Enumeration \textit{Modulstatus} abgebildet.
+
+In der Datenspeicherung wird Vererbung jedoch gezielt zur Abstraktion eingesetzt: Die abstrakte Basisklasse \textit{StudienplanRepository} (\texttt{abc.ABC}) definiert die Schnittstelle mit den Methoden \texttt{speichern()} und \texttt{laden()}, während \textit{SQLiteStudienplanRepository} die konkrete relationale Implementierung bereitstellt.
+
+\textbf{Test und Ergebnis:} Die Abstraktion über ein Interface trennt die Datenhaltung vollständig von Fachlogik und Benutzeroberfläche.
+
+\textbf{Folge für das UML-Modell:} Im UML-Modell wird die Vererbungsbeziehung zwischen \textit{SQLiteStudienplanRepository} und \textit{StudienplanRepository} formal korrekt als Generalisierung (durchgezogene Linie mit nicht ausgefüllter, dreieckiger Pfeilspitze zur Oberklasse) gekennzeichnet.
+
+% --------------------------------------------------
+\subsection{Ergebnisse und Änderungen gegenüber Phase 1}
+
+\begin{table}[H]
+    \centering
+    \small
+    \caption{Änderungen gegenüber dem Fachmodell aus Phase 1}
+    \begin{tabularx}{\textwidth}{
+        >{\raggedright\arraybackslash}p{2.6cm}
+        >{\raggedright\arraybackslash}p{3.0cm}
+        >{\raggedright\arraybackslash}X
+    }
+        \toprule
+        \textbf{Element} &
+        \textbf{Entscheidung} &
+        \textbf{Begründung durch den Python-Test} \\
+        \midrule
+        \textit{Studienplan} &
+        beibehalten, präzisiert &
+        Zentrales Aggregat; verwaltet Modulkomposition, berechnet Fortschritt und Zeitprognose über gekapselte Properties. \\
+        \textit{Modul} &
+        beibehalten, gekapselt &
+        Kapselt Moduldaten über validierende Properties (\texttt{@property}); referenziert optional eine \textit{Prüfungsleistung}. \\
+        \textit{Prüfungsleistung} &
+        \textbf{neu ergänzt} &
+        Eigene Entity-Klasse für Prüfungsdaten (\texttt{titel}, \texttt{datum}, \texttt{note}, \texttt{bestanden}); entlastet \textit{Modul} von reiner Prüfungsverwaltung. \\
+        \textit{Modulstatus} &
+        beibehalten &
+        Begrenzt die Modulzustände (\texttt{GEPLANT}, \texttt{AKTIV}, \texttt{WARTE\_AUF\_ERGEBNIS}, \texttt{ABGESCHLOSSEN}) und sichert kontrollierte Statuswechsel. \\
+        \textit{Student} / \textit{Studienziel} &
+        nicht ergänzt &
+        Für den lokalen Single-User-Prototyp reichen die Zielwerte im Studienplan aus. Zusätzliche Klassen würden den Entwurf unnötig erweitern. \\
+        \texttt{reihenfolge} &
+        fachlich begründet &
+        Definiert die deterministische Sequenz der Module zur Berechnung der Zeitprognose im Domain-Modell. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+% ==================================================
+\section{Entwurf der Gesamtarchitektur}
+
+\subsection{Architekturüberblick}
+
+Um eine saubere Trennung von Benutzeroberfläche, Anwendungssteuerung und Persistenz zu erreichen (Separation of Concerns), wird die Gesamtarchitektur in vier klar voneinander entkoppelte Schichten gegliedert:
+\begin{enumerate}
+    \item \textbf{Fachmodell (Domain Layer):} Bildet die Geschäftslogik über die drei Entity-Klassen \textit{Studienplan}, \textit{Modul}, \textit{Prüfungsleistung} sowie die Enumeration \textit{Modulstatus} ab. Es ist vollständig frei von UI- und SQL-Abhängigkeiten.
+    \item \textbf{Anwendungssteuerung (Controller Layer):} Die Klasse \textit{DashboardController} koordiniert Benutzeraktionen, Validierungsabläufe und den Datenfluss zwischen Benutzeroberfläche und Persistenz.
+    \item \textbf{Persistenz (Repository Layer):} Kapselt Datenbankoperationen hinter dem Interface \textit{StudienplanRepository}. \textit{SQLiteStudienplanRepository} implementiert den relationalen Zugriff.
+    \item \textbf{Benutzeroberfläche (UI / Presentation Layer):} \textit{UniSpeedrunApp} fungiert als \textit{Composition Root}, erzeugt Repository sowie Controller und injiziert diese in den \textit{DashboardScreen}. Die Textual-Screens dienen ausschließlich der Darstellung und Ereignisentgegennahme.
+\end{enumerate}
+
+% --------------------------------------------------
+\subsection{UML-Klassendiagramm der Gesamtarchitektur}
+
+Das Klassendiagramm zeigt die überarbeitete Gesamtarchitektur des Prototyps. Das Fachmodell besteht aus \textit{Studienplan}, \textit{Modul}, \textit{Prüfungsleistung} und der Enumeration \textit{Modulstatus}. Ergänzend werden die Controller-Klasse, die Textual-Benutzeroberfläche sowie die Repository-Struktur für die SQLite-Datenspeicherung dargestellt.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{UML_PHASE2.svg}{
+        \includesvg[
+            width=0.92\textwidth,
+            height=0.30\textheight,
+            keepaspectratio,
+            inkscapearea=drawing
+        ]{UML_PHASE2}
+    }{
+        \IfFileExists{UML_PHASE2.png}{
+            \includegraphics[
+                width=0.92\textwidth,
+                height=0.30\textheight,
+                keepaspectratio
+            ]{UML_PHASE2.png}
+        }{
+            \fbox{
+                \parbox[c][5cm][c]{0.9\textwidth}{
+                    \centering
+                    VOLLSTÄNDIGES UML-KLASSENDIAGRAMM HIER EINFÜGEN (UML\_PHASE2.svg / UML\_PHASE2.png)
+                }
+            }
+        }
+    }
+    \caption{UML-Klassendiagramm der geplanten Gesamtarchitektur, eigene Darstellung}
+    \label{fig:gesamtarchitektur}
+\end{figure}
+
+% --------------------------------------------------
+\subsection{Klassen und Verantwortlichkeiten}
+
+\begin{table}[H]
+    \centering
+    \small
+    \caption{Verantwortlichkeiten innerhalb der Gesamtarchitektur}
+    \begin{tabularx}{\textwidth}{
+        >{\raggedright\arraybackslash}p{3.6cm}
+        >{\raggedright\arraybackslash}p{3.8cm}
+        >{\raggedright\arraybackslash}X
+    }
+        \toprule
+        \textbf{Bereich} &
+        \textbf{Klasse oder Klassen} &
+        \textbf{Verantwortung} \\
+        \midrule
+        Fachmodell &
+        \textit{Studienplan}, \textit{Modul}, \textit{Prüfungsleistung}, \textit{Modulstatus} &
+        Kapseln fachliche Invarianten über validierende Properties, verwalten Prüfungsnoten und berechnen Fortschritt, Restzeit sowie Zeitprognosen. \\
+        Anwendungssteuerung &
+        \textit{DashboardController} &
+        Koordiniert Modulübergänge, Umsortierungen und den Datenfluss zwischen Benutzeroberfläche und Repository. \\
+        Benutzeroberfläche &
+        \textit{UniSpeedrunApp}, \textit{DashboardScreen} &
+        \textit{Composition Root} für Dependency Injection bzw. reine Präsentationsschicht zur Ein- und Ausgabe. \\
+        Datenspeicherung &
+        \textit{StudienplanRepository}, \textit{SQLiteStudienplanRepository} &
+        Kapseln die relationale SQLite-Persistenz hinter einer abstrakten Schnittstelle (Dependency Inversion). \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+
+% --------------------------------------------------
+\subsection{Zusammenarbeit der Klassen}
+
+Beim Start der Anwendung erzeugt \textit{UniSpeedrunApp} das konkrete \textit{SQLiteStudienplanRepository} und übergibt dieses an den \textit{DashboardController} (Dependency Injection). Der Controller lädt den \textit{Studienplan} und stellt die Daten dem \textit{DashboardScreen} zur Anzeige bereit.
+
+Löst der Benutzer eine Aktion aus (z.\,B. Modulabschluss über die Taste \texttt{[M]}), delegiert der \textit{DashboardScreen} diesen Aufruf direkt an den \textit{DashboardController}. Der Controller stößt die fachliche Zustandsänderung im Fachmodell an (z.\,B. Wechsel des Moduls auf \texttt{WARTE\_AUF\_ERGEBNIS} und Erfassung des Prüfungsdatums in der \textit{Prüfungsleistung}). Das Fachmodell aktualisiert den Zeitstrahl und liefert neu berechnete Prognosewerte. Anschließend veranlasst der Controller die persistente Speicherung über das Repository. Die Benutzeroberfläche empfängt die Bestätigung und aktualisiert die Anzeige.
+
+% --------------------------------------------------
+\subsection{Begründung zentraler Entwurfsentscheidungen}
+
+Die strikte Vierteilung in Präsentation, Controller, Fachmodell und Persistenz verhindert eine Vermischung von Zuständigkeiten. Durch den \textit{DashboardController} bleibt die Benutzeroberfläche frei von Anwendungslogik und Datenbankaufrufen. Änderungen am UI-Design (z.\,B. Textual-Widgets) können vorgenommen werden, ohne Fachlogik oder Persistenz zu beeinflussen.
+
+SQLite wird verwendet, da es für einen lokalen Single-User-Prototyp performant und dateibasiert ohne Serverdienste arbeitet. Die Kapselung über die Schnittstelle \textit{StudienplanRepository} stellt sicher, dass SQL-Befehle isoliert bleiben und eine alternative Speicherung (z.\,B. JSON oder Cloud-Datenbanken) ohne Anpassung des Fachmodells ergänzt werden könnte (Dependency Inversion Principle).
+
+% ==================================================
+\section{Fazit und Vorbereitung der Implementierung}
+
+Die Untersuchung zeigt, dass das überarbeitete Fachmodell mit den drei Entity-Klassen \textit{Studienplan}, \textit{Modul} und \textit{Prüfungsleistung} sowie der Enumeration \textit{Modulstatus} die fachlichen Anforderungen präzise abbildet. Durch den Einsatz validierender Properties wird die Kapselung in Python robust gegen nachträgliche Regelumgehungen geschützt. Die Einführung des \textit{DashboardController}s entkoppelt Benutzeroberfläche und Persistenz vollständig. Damit ist eine fundierte architektonische Grundlage für die finale Implementierung in Phase 3 geschaffen.
+
+% ==================================================
+\renewcommand{\refname}{Literatur- und Quellenverzeichnis}
+
+\begin{thebibliography}{9}
+
+\bibitem{python-enum}
+Python Software Foundation: \textit{enum -- Support for enumerations}. 
+Online verfügbar unter: \url{https://docs.python.org/3/library/enum.html}, abgerufen am 14.08.2026.
+
+\bibitem{python-sqlite}
+Python Software Foundation: \textit{sqlite3 -- DB-API 2.0 interface for SQLite databases}. 
+Online verfügbar unter: \url{https://docs.python.org/3/library/sqlite3.html}, abgerufen am 12.08.2026.
+
+\bibitem{textual}
+Textualize: \textit{Textual Documentation}. 
+Online verfügbar unter: \url{https://textual.textualize.io/}, abgerufen am 11.08.2026.
+
+\bibitem{uml}
+Object Management Group: \textit{OMG Unified Modeling Language, Version 2.5.1}. 
+Online verfügbar unter: \url{https://www.omg.org/spec/UML/2.5.1/PDF}, abgerufen am 14.08.2026.
+
+\end{thebibliography}
+
+\end{document}

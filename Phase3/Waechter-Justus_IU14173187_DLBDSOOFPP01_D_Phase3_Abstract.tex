@@ -1,0 +1,97 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    top=2.2cm,
+    bottom=2.2cm,
+    left=2.5cm,
+    right=2.5cm
+}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=black
+}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\section}{0pt}{1.3ex plus 0.3ex minus 0.2ex}{0.5ex}
+\titlespacing*{\subsection}{0pt}{1.0ex plus 0.2ex minus 0.2ex}{0.3ex}
+
+\begin{document}
+
+\noindent
+{\LARGE\textbf{Abstract und Abschlussbericht: Uni Speedrun}}\\[0.2cm]
+{\large Objektorientierte und funktionale Programmierung mit Python}\\[0.3cm]
+\textbf{Justus Wächter} \hfill \textbf{Matrikelnummer:} IU14173187\\
+\textbf{Portfoliophase 3} \hfill \textbf{Kurs:} DLBDSOOFPP01\_D
+\vspace{0.3cm}
+\hrule
+\vspace{0.4cm}
+
+\section{Ausgangslage und Zielsetzung des Projekts}
+Im flexiblen Fernstudienmodell tragen Studierende die Verantwortung für die zeitliche Organisation ihres Studienfortschritts. Während hochschuleigene Portale primär Notenübersichten bereitstellen, fehlt häufig eine dynamische Verlaufs- und Zeitplanung, die Verzögerungen, Bearbeitungszeiten und Korrekturphasen transparent verknüpft. Das Projekt \textit{Uni Speedrun} schließt diese Lücke durch ein leichtgewichtiges, lokal ausführbares Terminal-User-Interface (TUI). 
+
+Ziel der finalen Phase 3 war die vollständige Implementierung des in Phase 1 konzipierten und in Phase 2 architektonisch modellierten Systems. Der Prototyp liefert eine automatisierte Fortschritts- und Zeitprognose, unterstützt einen praxisnahen Modul-Lebenszyklus, persistiert alle Daten in einer lokalen SQLite-Datenbank und setzt die Prinzipien einer sauberen objektorientierten Schichtenarchitektur unter Einbindung des Feedbacks aus Phase 2 konsequent um.
+
+\section{Methodik, Schichtenarchitektur und technische Umsetzung}
+Die Umsetzung erfolgte in Python 3.10+ unter strikter Einhaltung der SOLID-Prinzipien. Als Reaktion auf das Feedback der Portfoliophase 2 wurde das Fachmodell erweitert sowie eine dedizierte Controller-Schicht zur klaren Trennung von UI und Persistenz eingeführt:
+
+\subsection{Fachmodell (Domain Layer)}
+Das Fachmodell kapselt die betriebswirtschaftliche Logik der Studienorganisation über drei miteinander verknüpfte Entity-Klassen sowie eine Status-Enumeration:
+\begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
+    \item \textbf{Prüfungsleistung:} Eigene Entity zur Modellierung von Prüfungen (\texttt{titel}, \texttt{datum}, \texttt{note}, \texttt{bestanden}). Kapselt die Validierung gültiger Notenwerte (1.0 bis 5.0) und entlastet das Modul von reinen Prüfungsverwaltungsaufgaben.
+    \item \textbf{Modul:} Repräsentiert ein Studienfach und hält eine optionale Referenz auf eine \texttt{Prüfungsleistung}. Kapselt fachliche Attribute (Name, ECTS, Dauer in Tagen, Reihenfolge, Status) über validierende Python-Properties (\texttt{@property} und Setter), um ein Umgehen fachlicher Regeln auch bei späteren Attributänderungen im Speicher auszuschließen.
+    \item \textbf{Studienplan:} Verwaltet die Komposition der Module als geordnete Menge. Er berechnet erreichte ECTS, den prozentualen Fortschritt und über \texttt{prognostiziertes\_studienende()} die Zeitprognose.
+    \item \textbf{Modulstatus (Enumeration):} Steuert die Zustandsverwaltung über \texttt{GEPLANT}, \texttt{AKTIV}, \texttt{WARTE\_AUF\_ERGEBNIS} und \texttt{ABGESCHLOSSEN}. Unzulässige Übergänge werden durch Fachmethoden verhindert.
+\end{itemize}
+
+\subsection{Anwendungssteuerung (Controller Layer)}
+Die Klasse \texttt{DashboardController} koordiniert Benutzeraktionen, Geschäftsabläufe und den Repository-Zugriff. Die Hauptanwendung \texttt{UniSpeedrunApp} fungiert als \textit{Composition Root} (Dependency Injection), erzeugt das Repository und den Controller und übergibt letzteren an die Benutzeroberfläche.
+
+\subsection{Persistenzschicht (Repository Layer)}
+Das \textit{Repository Pattern} trennt die Datenhaltung von der Fachlogik. Die Schnittstelle \texttt{StudienplanRepository} (abstrakte Basisklasse) wird von \texttt{SQLiteStudienplanRepository} implementiert (Generalisierung via DIP). Weder Fachmodell noch Benutzeroberfläche enthalten SQL-Befehle.
+
+\subsection{Präsentationsschicht (Textual TUI Layer)}
+Die Benutzeroberfläche basiert auf dem Framework \textit{Textual} mit TCSS-Stylesheets (\texttt{app.tcss}) und ist rein auf Darstellung und Eingabeempfang beschränkt: \texttt{DashboardScreen}, \texttt{EinstellungenScreen}, \texttt{ModulBearbeitenScreen} und \texttt{ArchivScreen}.
+
+\newpage
+
+\section{Ergebnisse und Funktionsumfang des Prototyps}
+Der entwickelte Prototyp deckt alle Anforderungen der Aufgabenstellung vollständig ab:
+\begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
+    \item \textbf{Zentrales Dashboard:} Zeigt Zieldatum, prognostiziertes Studienende und die kalendarische Abweichung (z.\,B. \textit{+4 Monate}). Das aktive Modul wird mit Resttagen hervorgehoben. Eine zentrierte Fortschrittskarte visualisiert den ECTS-Stand und den Fortschrittsbalken (0--100\,\%).
+    \item \textbf{Praxisnaher Modul-Lebenszyklus:} Über das Tastenkürzel \texttt{[M]} wird das aktive Modul nach Prüfungsabgabe in den Status \texttt{WARTE\_AUF\_ERGEBNIS} versetzt. Dadurch wird der aktive Bearbeitungsplatz freigegeben und das nächste Modul kann gestartet werden, noch während die Korrektur läuft.
+    \item \textbf{Einstellungen und Modulverwaltung:} Über \texttt{[S]} können Studienziel, Ziel-ECTS, Zieldauer und Startdatum im Format \texttt{TT.MM.JJJJ} editiert werden (Auto-Save). Module lassen sich frei anlegen, löschen, bearbeiten und über Pfeiltasten ($\blacktriangle$/$\blacktriangledown$) oder Positionsangabe neu reihen.
+    \item \textbf{Archiv und Notenübersicht:} Nach Vorliegen der Bewertung wird das Modul abgeschlossen. Der \texttt{ArchivScreen} (\texttt{[A]}) listet alle Leistungen auf und berechnet automatisch den Notendurchschnitt.
+    \item \textbf{Qualitätssicherung:} Die funktionale Korrektheit aller Entitäten, Controller-Abläufe und Persistenzoperationen ist durch \textbf{53 automatisierte Tests} (\texttt{pytest}) vollständig nachgewiesen.
+\end{itemize}
+
+\section{Kritische Reflexion und Lessons Learned}
+Im Rahmen der Implementierung wurden zentrale Entwurfsentscheidungen und Python-Besonderheiten reflektiert:
+\begin{enumerate}[leftmargin=*,noitemsep,topsep=2pt]
+    \item \textbf{Kapselung \& Property-Validierung in Python:} Da Python keine strikte Zugriffskontrolle (wie \texttt{private}) erzwingt, gewährleisten konsequent eingesetzte Setter-Properties (\texttt{@property}), dass Invarianten (z.\,B. ECTS $> 0$, Note zwischen 1.0 und 5.0) nicht durch nachträgliche Attributzuweisungen verletzt werden können.
+    \item \textbf{Entkopplung durch Controller \& DIP:} Durch die Einführung des \texttt{DashboardController}s wurde die Benutzeroberfläche vollständig von Persistenz- und Steuerungslogik befreit. Die Klassen bleiben hochgradig testbar und unabhängig austauschbar.
+    \item \textbf{Lebenszyklusabhängigkeit bei Komposition:} Die Bindung von Modulen an den Studienplan wurde fachlich als Komposition realisiert, da Verlaufsdaten (Start-, Prüfungs-, Abschlussdatum) an die individuelle Planung gekoppelt sind.
+    \item \textbf{TUI-Rendering und Event-Steuerung:} In Textual wurden Rich-Markup-Konflikte bei Tastatur-Shortcuts (\texttt{[S]}, \texttt{[M]}) durch Deaktivieren des Markups behoben. Modale Dialoge wurden über \texttt{dismiss()} asynchron an die aufrufenden Screens zurückgebunden.
+\end{enumerate}
+
+\section{Fazit}
+Mit \textit{Uni Speedrun} wurde ein robuster, modularer und vollständig funktionsfähiger Prototyp für die Studienverlaufsplanung geschaffen. Das Projekt demonstriert die Vorteile objektorientierter Entwurfsmuster, testgetriebener Entwicklung und klarer Schichtenarchitektur in Python. Alle Anforderungen von Phase 3 wurden termingerecht und vollumfänglich erfüllt.
+
+\end{document}
