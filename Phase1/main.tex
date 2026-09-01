@@ -1,0 +1,324 @@
+\documentclass[11pt,a4paper]{article}
+
+% ==================================================
+% Pakete
+% ==================================================
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{csquotes}
+\usepackage[ngerman]{babel}
+\usepackage{svg}
+\usepackage[ngerman]{babel}
+\usepackage{csquotes}
+
+\usepackage[
+    top=2cm,
+    bottom=2cm,
+    left=2.5cm,
+    right=2.5cm
+]{geometry}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+% ==================================================
+% Formatierung
+% ==================================================
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+
+\setlist[itemize]{
+    noitemsep,
+    topsep=3pt
+}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+% ==================================================
+% Angaben
+% ==================================================
+
+\newcommand{\projektname}{Uni Speedrun}
+\newcommand{\matrikelnummer}{IU14173187}
+\newcommand{\kurs}{DLBDSOOFPP01\_D}
+
+% ==================================================
+% Dokument
+% ==================================================
+
+\begin{document}
+
+% Keine eigene Titelseite, da das Dokument maximal
+% fünf Seiten umfassen darf.
+
+\begin{center}
+    {\Large\textbf{Konzeptdokument: \projektname}}\\[3pt]
+    {\large Objektorientierte und funktionale Programmierung mit Python}\\[6pt]
+
+    Justus Wächter \hfill Matrikelnummer: \matrikelnummer\\
+    Portfoliophase 1 \hfill Kurs: \kurs
+\end{center}
+
+\hrule
+\vspace{0.4cm}
+
+% ==================================================
+\section{Ziele des Dashboards}
+Das Projekt „Uni Speedrun“ soll Studierende, ergänzend zum offiziellen Curriculum, dabei unterstützen, ihr individuell festgelegtes Zieldatum zur Beendigung des Studiums übersichtlich festzuhalten.
+
+Dazu zeigt das Dashboard die erreichten und angestrebten European Credit Transfer and Accumulation System (ECTS), das aktuelle Modul, dessen geplante und verbleibende Bearbeitungszeit sowie mögliche Abweichungen vom gewählten Zeitplan an.
+
+Die Bearbeitungszeit eines Moduls wird tagesaktuell berechnet. Wird ein Modul früher oder später als geplant abgeschlossen, verschieben sich die nachfolgenden Module in der Visualisierung entsprechend nach vorn oder hinten. Daraus wird ein prognostiziertes Studienende berechnet und mit dem selbst festgelegten Zieltermin verglichen und dargestellt.
+
+% ==================================================
+\section{Dashboard-Entwurf}
+
+\subsection{Angezeigte Inhalte und Funktionsweise}
+
+Das Dashboard gliedert sich in Zielstatus, aktuelles Modul, Studienfortschritt, nächstes Modul und Bedienungsoptionen.
+
+Der Zielstatus zeigt den individuell festgelegten Zieltermin, das vom System prognostizierte Studienende und die Abweichung zwischen den jeweiligen Daten. Das aktive Modul stellt die Modulbezeichnung, ECTS, erwartete sowie die verbleibende Bearbeitungszeit dar.
+
+Der Studienfortschritt zeigt die erreichten und angestrebten ECTS sowie den daraus berechneten Prozentwert. Zusätzlich werden Modulbezeichnung, ECTS und geplanter Zeitaufwand des nächsten Moduls angezeigt.
+
+Beim Erstellen eines Studienplans werden neben dem oben genannten individuell festgelegten Zieltermin ebenfalls die Ziel-ECTS zur Beendingung des Studiums abfragt. Zudem folgt eine Eintragung der Module basierend auf ihrer Bezeichnung, ECTS, Dauer, ihres Aktivitätsstatus sowie einer eigen definierten Reihenfolge.
+
+Es darf höchstens ein Modul den Status „Aktiv“ besitzen. Wird dieses Modul abgeschlossen, werden seine ECTS zum Fortschritt addiert, das Modul wird archiviert und das nächste geplante Modul kann aktiviert werden. Die tatsächliche Bearbeitungsdauer wird dabei für die aktualisierte Abschlussprognose berücksichtigt.
+
+\newpage
+
+Die beschriebenen Punkte können in der Dashboard-Skizze 2.2 mit den folgenden Punkten nachgeprüft werden: 
+
+
+
+\begin{enumerate}
+    \item \textbf{Bereich 1:} individuell festgelegter Zieltermin
+    \item \textbf{Bereich 2:} vom System prognostizierter Zieltermin
+    \item \textbf{Bereich 3:} listet die Abweichung zwischen individuellem  und prognostiziertem Zieltermin auf
+    \item \textbf{Bereich 4:} Informationsausgabe des aktuellen Moduls
+    \item \textbf{Bereich 5:} Anzeige des Studienfortschritts
+    \item \textbf{Bereich 6:} Auflistung des nächsten Moduls
+    \item \textbf{Bereich 7:} Bedienungs- und Einstellungselemente
+
+\end{enumerate}
+
+\subsection{Dashboard-Skizze}
+
+\begin{figure}[H]
+    \centering
+
+    \includesvg[
+        width=\textwidth,
+        height=0.42\textheight,
+        keepaspectratio
+    ]{Phase_1_OOP_Diagram}
+
+    \caption{Konzeptskizze des Dashboards \enquote{Uni Speedrun}, erstellt mit draw.io.
+    \textbf{Information:} Die Prozentwerte im Bereich~(5) werden aufgrund des SVG-Formats in Overleaf nicht korrekt gerendert.}
+    \label{fig:dashboard}
+\end{figure}
+
+ 
+
+% Erläutere die Bereiche aus der Abbildung.
+% Du kannst die Bereiche vorher in der Skizze nummerieren.
+%
+% Beispiel für die Form, nicht als fertigen Inhalt übernehmen:
+% Bereich 1 zeigt ...
+% Bereich 2 enthält ...
+
+
+
+
+
+% Erkläre abschließend:
+% - Welche Anzeige gehört zu welchem Ziel?
+% - Woran erkennt der Benutzer seinen aktuellen Fortschritt?
+% - Woran erkennt er eine Abweichung vom Plan?
+
+Die Bereiche 1-5 gelten als besonders wichtig, da dort der Fortschritt des aktuellen Moduls sowie das prognostizierte Abschlussdatum überblickt werden kann. Darüber hinaus werden zeitliche Abweichungen ersichtlich. 
+
+
+
+% ==================================================
+\section{Objektorientiertes Fachmodell}
+
+\subsection{UML-Klassendiagramm}
+
+Das UML-Klassendiagramm zeigt das Fachmodell mit den Entity-Klassen
+Studienplan, Studienziel und Modul sowie der Enumeration Modulstatus.
+Die verwendete Darstellung der Klassen, Multiplizitäten und Kompositionen
+orientiert sich an der UML-Spezifikation \cite{omg-uml}.
+
+
+\begin{figure}[htbp]
+    \centering
+    \includesvg[
+        width=\textwidth,
+        keepaspectratio
+    ]{UML}
+    \caption{UML-Klassendiagramm, erstellt mit Lucid}
+    \label{fig:uml}
+\end{figure}
+
+\subsection{Diskussion der Modellierungsentscheidungen}
+
+\textbf{Studienplan:} Der \textit{Studienplan} bildet das zentrale Planungsobjekt ab und kapselt sowohl die allgemeine Struktur der Module als auch die individuellen Verlaufs- und Zieldaten des Studierenden (wie Zieltermin und Ziel-ECTS). Er ermittelt die erreichten ECTS, den Studienfortschritt, das aktuelle und nächste Modul sowie das prognostizierte Abschlussdatum. Auf die Auslagerung einer separaten \textit{Studienziel}-Klasse wurde verzichtet, um redundante Datenstrukturen im Prototyp zu vermeiden. Zudem entfällt eine explizite \textit{Student}-Klasse, da die Anwendung als lokales Single-User-Dashboard für eine einzelne Person ausgelegt ist.
+
+\textbf{Modul:} Die Klasse \textit{Modul} bildet ein einzelnes Modul mit seinen ECTS, der geplanten Dauer, seiner Position im Studienplan und seinem aktuellen Status ab. Start-, Prüfungs- und Abschlussdatum dokumentieren den tatsächlichen Verlauf. Das \textit{Modul} ist außerdem für das Aktivieren, Versetzen in Bewertung, Abschließen und Berechnen seiner verbleibenden Bearbeitungszeit verantwortlich.
+
+\textbf{Modulstatus:} Die Enumeration \textit{Modulstatus} begrenzt den Zustand eines \textit{Moduls} auf \texttt{GEPLANT}, \texttt{AKTIV}, \texttt{WARTE\_AUF\_ERGEBNIS} oder \texttt{ABGESCHLOSSEN}. Dadurch besitzt ein \textit{Modul} jederzeit genau einen gültigen Status. Der Status \texttt{WARTE\_AUF\_ERGEBNIS} ermöglicht es, ein absolviertes Modul während der Korrekturphase abzubilden, sodass bereits das nächste Modul auf \texttt{AKTIV} gesetzt werden kann.
+
+\textbf{Beziehungen und Multiplizitäten:} Ein \textit{Studienplan} enthält mindestens ein \textit{Modul}, kann aber beliebig viele \textit{Module} verwalten. Daher wird zwischen \textit{Studienplan} und \textit{Modul} die Multiplizität \enquote{1 zu 1..*} verwendet. Ein \textit{Modul} gehört in diesem Prototyp genau zu einem \textit{Studienplan}. Die \textit{Module} bilden außerdem eine geordnete Menge. Das explizite Attribut \texttt{reihenfolge} in der Klasse \textit{Modul} stellt dabei sicher, dass diese Reihenfolge in der relationalen SQLite-Datenbank dauerhaft gespeichert und rekonstruiert werden kann.
+\newpage
+s
+\textbf{Komposition:} Die Beziehung zwischen \textit{Studienplan} und \textit{Modul} ist als Komposition modelliert (dargestellt durch eine ausgefüllte schwarze Raute am \textit{Studienplan}). Die Module enthalten spezifische Verlaufsdaten für diesen konkreten Studienplan. Wird ein \textit{Studienplan} gelöscht, werden auch die zugehörigen \textit{Module} aus dem System entfernt.
+
+\textbf{Dynamische Anpassung:} Tritt bei der Bearbeitung eines Moduls eine Verzögerung auf oder wird ein Modul früher abgeschlossen, stößt der \textit{Studienplan} über die Methode \texttt{aktualisiereZeitplan()} die Neuberechnung der Start- und Enddaten aller nachfolgenden Module an.
+
+\textbf{Alternativen und Grenzen:} Vererbung wird nicht verwendet, da zwischen den Einheiten keine \enquote{ist-ein}-Beziehung besteht. Nicht berücksichtigt werden im Prototyp Semesterstrukturen, Modulabhängigkeiten sowie unterschiedliche Prüfungsformen.
+
+% ==================================================
+% ==================================================
+% ==================================================
+\section{Machbarkeitsüberprüfung}
+
+Mit kleinen Testprogrammen soll geprüft werden, ob die Datenspeicherung mit
+sqlite3, die Benutzeroberfläche mit Textual und die benötigten Berechnungen
+umgesetzt werden können. Die Tests werden vor der vollständigen
+Implementierung durchgeführt, damit mögliche Probleme frühzeitig erkannt
+werden.
+
+\subsection{Werkzeuge und technische Entscheidungen}
+
+\begin{table}[H]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.25}
+    \caption{Werkzeuge und technische Entscheidungen}
+    \label{tab:werkzeuge}
+
+    \begin{tabularx}{\textwidth}{
+        @{}
+        >{\raggedright\arraybackslash}p{4.1cm}
+        >{\raggedright\arraybackslash}X
+        @{}
+    }
+        \toprule
+        \textbf{Bereich und Auswahl} &
+        \textbf{Begründung und Alternative} \\
+        \midrule
+
+        \textbf{Programmiersprache}
+        \newline Python
+        \newline \textit{3.14.5} &
+        \\
+
+        \textbf{Entwicklungsumgebung}
+        \newline Visual Studio Code
+        \newline \textit{1.132} &
+        Visual Studio Code wird aufgrund vorhandener Erfahrung und der
+        einfachen Handhabung verwendet. Eine Alternative wäre PyCharm. \\
+
+        \textbf{Benutzeroberfläche}
+        \newline Textual
+        \newline 8.2.8 &
+        Textual wird für die Umsetzung einer terminalbasierten Benutzeroberfläche
+        erprobt \cite{textual}. Alternativ wäre eine einfache Bedienung über die
+        Kommandozeile möglich. \\
+
+        \textbf{Datenspeicherung}
+        \newline SQLite
+        \newline 3.50.4 &
+        SQLite ermöglicht eine lokale Datenspeicherung und wird über das Python-Modul
+        \texttt{sqlite3} verwendet \cite{python-sqlite}. Als Alternative wird eine
+        einfache JSON-Datei betrachtet. \\
+
+        \textbf{Versionsverwaltung}
+        \newline Git
+        \newline \textit{2.50.1} &
+        Git dient zur Nachverfolgung der Änderungen und zur späteren
+        Bereitstellung über GitHub. Eine Alternative wäre die manuelle
+        Speicherung verschiedener Dateiversionen. \\
+
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection{Durchgeführte Machbarkeitstests}
+
+\textbf{Test zur Datenspeicherung:}
+Mit \texttt{sqlite3} wurde eine lokale Datenbank mit einer Tabelle für Module erstellt. Ein Testmodul mit Name, ECTS, Dauer und Status wurde gespeichert und anschließend vollständg ausgelesen. Damit ist sqlite3 für die geplante Datenspeicherung geeignet.
+
+% Beispiel für den Aufbau nach der tatsächlichen Durchführung:
+% Ein Studienziel und zwei Module wurden in einer JSON-Datei gespeichert
+% und anschließend erneut eingelesen. Die gespeicherten Werte konnten
+% vollständig wiederhergestellt werden. Daher ist JSON für den geplanten
+% Prototyp grundsätzlich geeignet.
+
+\textbf{Test zur Benutzeroberfläche:}
+
+% Beispiel für den Aufbau nach der tatsächlichen Durchführung:
+% Mit Textual wurden eine Überschrift, das aktuelle Modul und ein
+% ECTS-Fortschritt dargestellt. Außerdem konnte eine Tastatureingabe
+% verarbeitet werden. Daher kann Textual für die geplante TUI verwendet
+% werden.
+
+Mit \texttt{Textual} wurde eine einfache TUI mit aktueller Uhrzeit gestartet. Der Inhalt wurde dargestellt und eine Tastatureingabe konnte verarbeitet werden. Textual erfüllt damit die grundlegende Anforderung an die Benutzeroberfläche
+
+
+% Beispiel für den Aufbau nach der tatsächlichen Durchführung:
+% Mit 55 von 180 ECTS wurde ein gerundeter Fortschritt von 31 Prozent
+% berechnet. Bei einer geplanten Moduldauer von 28 Tagen und acht bereits
+% vergangenen Tagen ergab sich eine Restzeit von 20 Tagen. Die benötigten
+% Berechnungen konnten damit grundsätzlich umgesetzt werden.
+\textbf{Test zur fachlichen Berechnung:}
+Aus 55 von 180 ECTS wurde ein gerundeter Fortschritt von 31 Prozent berechnet. Bei 28 geplanten und acht vergangenen Tagen ergab sich eine Restzeit von 20 Tagen. Eine Verzögerung wurde auf das prognostizierte Abschlussdatum übertragen, sodass die benötigten Berechnungen umsetzbar sind.
+
+\textbf{Ergebnis der Machbarkeitsüberprüfung:}
+Die Tests bestätigen, dass sqlite3, Textual und die vorgesehenen Berechnungen für den Prototyp im vollen Maße genutzt werden können.
+
+
+% Beispiel für den Aufbau:
+% Die Tests zeigen, dass die grundlegenden Funktionen mit den ausgewählten
+% Werkzeugen umsetzbar sind. In Phase 2 muss insbesondere untersucht werden,
+% wie das Fachmodell in Python übertragen und mit der TUI verbunden wird.
+
+% ==================================================
+\section*{Literatur- und Quellenverzeichnis}
+
+\begin{thebibliography}{9}
+\small
+
+\bibitem{python-sqlite}
+Python Software Foundation:
+\textit{sqlite3 -- DB-API 2.0 interface for SQLite databases}.
+\url{https://docs.python.org/3/library/sqlite3.html}
+
+\bibitem{textual}
+Textualize:
+\textit{Textual Documentation}.
+\url{https://textual.textualize.io/}
+
+\bibitem{omg-uml}
+Object Management Group:
+\textit{OMG Unified Modeling Language, Version 2.5.1}.
+2017.
+\url{https://www.omg.org/spec/UML/2.5.1/PDF}
+
+\end{thebibliography}
+% ==================================================
+
+\end{document}

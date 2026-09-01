@@ -1,0 +1,57 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{fontspec}
+\setmainfont{Arial}
+
+\usepackage{geometry}
+\geometry{a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm}
+
+\usepackage[ngerman]{babel}
+
+\usepackage{titlesec}
+\titleformat{\section}{\fontsize{12}{14.4}\selectfont\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\usepackage{fancyvrb}
+\fvset{fontsize=\small,frame=single,framesep=3pt,xleftmargin=2pt,xrightmargin=2pt}
+
+\usepackage[hidelinks]{hyperref}
+
+\begin{document}
+\pagestyle{empty}
+
+{\LARGE\bfseries Installationsanleitung: Uni Speedrun}
+
+\textbf{Repository:} \url{https://github.com/FreakyLetsFail/UNI-Speedrun}
+
+\section*{Voraussetzungen}
+Windows 10/11, Python 3.10 oder neuer, Git und Windows Terminal oder Visual Studio Code.
+
+\section*{Installation unter Windows}
+\begin{Verbatim}
+git clone https://github.com/FreakyLetsFail/UNI-Speedrun.git
+cd UNI-Speedrun
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+\end{Verbatim}
+
+\section*{Start}
+\begin{Verbatim}
+$env:PYTHONPATH = "src"
+python -m uni_speedrun
+\end{Verbatim}
+Beim ersten Start wird die lokale Datenbank unter \texttt{data/uni\_speedrun.db} angelegt. Anschließend kann ein Studienplan erstellt werden.
+
+\section*{Tests}
+\begin{Verbatim}
+python -m pip install -r requirements-dev.txt
+python -m pytest
+\end{Verbatim}
+Erwartetes Ergebnis: 56 erfolgreiche Tests.
+
+\end{document}
