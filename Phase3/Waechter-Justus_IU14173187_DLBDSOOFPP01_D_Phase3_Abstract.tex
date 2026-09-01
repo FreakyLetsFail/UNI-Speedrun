@@ -45,12 +45,12 @@
 \vspace{0.4cm}
 
 \section{Ausgangslage und Zielsetzung des Projekts}
-Im flexiblen Fernstudienmodell tragen Studierende die Verantwortung für die zeitliche Organisation ihres Studienfortschritts. Während hochschuleigene Portale primär Notenübersichten bereitstellen, fehlt häufig eine dynamische Verlaufs- und Zeitplanung, die Verzögerungen, Bearbeitungszeiten und Korrekturphasen transparent verknüpft. Das Projekt \textit{Uni Speedrun} schließt diese Lücke durch ein leichtgewichtiges, lokal ausführbares Terminal-User-Interface (TUI). 
+Im Fernstudium muss man seine Zeit weitgehend selbst einteilen. Die hochschuleigenen Portale zeigen zwar Noten, aber keine laufende Zeitplanung mit Verzögerungen und Korrekturphasen. Genau da setzt \textit{Uni Speedrun} an: ein einfaches, lokales Terminal-Tool (TUI).
 
-Ziel der finalen Phase 3 war die vollständige Implementierung des in Phase 1 konzipierten und in Phase 2 architektonisch modellierten Systems. Der Prototyp liefert eine automatisierte Fortschritts- und Zeitprognose, unterstützt einen praxisnahen Modul-Lebenszyklus, persistiert alle Daten in einer lokalen SQLite-Datenbank und setzt die Prinzipien einer sauberen objektorientierten Schichtenarchitektur unter Einbindung des Feedbacks aus Phase 2 konsequent um.
+Ziel von Phase 3 war die vollständige Implementierung des in Phase 1 konzipierten und in Phase 2 architektonisch modellierten Systems. Der Prototyp liefert eine automatisierte Fortschritts- und Zeitprognose, unterstützt einen praxisnahen Modul-Lebenszyklus, persistiert alle Daten in einer lokalen SQLite-Datenbank und setzt die Schichtenarchitektur aus Phase 2 mit dem Feedback von damals um.
 
 \section{Methodik, Schichtenarchitektur und technische Umsetzung}
-Die Umsetzung erfolgte in Python 3.10+ unter strikter Einhaltung der SOLID-Prinzipien. Als Reaktion auf das Feedback der Portfoliophase 2 wurde das Fachmodell erweitert sowie eine dedizierte Controller-Schicht zur klaren Trennung von UI und Persistenz eingeführt:
+Ich habe mich bei der Umsetzung in Python 3.10+ an den SOLID-Prinzipien orientiert. Als Reaktion auf das Feedback der Portfoliophase 2 wurde das Fachmodell erweitert sowie eine dedizierte Controller-Schicht zur klaren Trennung von UI und Persistenz eingeführt:
 
 \subsection{Fachmodell (Domain Layer)}
 Das Fachmodell kapselt die betriebswirtschaftliche Logik der Studienorganisation über drei miteinander verknüpfte Entity-Klassen sowie eine Status-Enumeration:
@@ -92,6 +92,6 @@ Im Rahmen der Implementierung wurden zentrale Entwurfsentscheidungen und Python-
 \end{enumerate}
 
 \section{Fazit}
-Mit \textit{Uni Speedrun} wurde ein modularer Prototyp für die Studienverlaufsplanung geschaffen. Das Projekt demonstriert objektorientierte Modellierung, automatisierte Tests und eine klare Schichtenarchitektur in Python. Die im Konzept festgelegten Kernfunktionen wurden umgesetzt und anhand der Tests überprüft.
+Mit \textit{Uni Speedrun} habe ich einen funktionierenden Prototyp für die Studienplanung gebaut, der zeigt, wie objektorientierte Konzepte, Tests und eine saubere Architektur in der Praxis zusammenspielen. Die im Konzept festgelegten Kernfunktionen wurden umgesetzt und anhand der Tests überprüft.
 
 \end{document}
